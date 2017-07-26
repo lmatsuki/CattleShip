@@ -1,12 +1,15 @@
-﻿  Game.cpp
-d:\documents\visual studio 2017\projects\cattleship\cattleship\game.cpp(63): warning C4996: 'sf::Text::setColor': was declared deprecated
-  d:\documents\zcode-library\sfml-2.4.2\include\sfml\graphics\text.hpp(177): note: see declaration of 'sf::Text::setColor'
-d:\documents\visual studio 2017\projects\cattleship\cattleship\game.cpp(72): warning C4996: 'sf::Text::setColor': was declared deprecated
-  d:\documents\zcode-library\sfml-2.4.2\include\sfml\graphics\text.hpp(177): note: see declaration of 'sf::Text::setColor'
-d:\documents\visual studio 2017\projects\cattleship\cattleship\game.cpp(92): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+﻿  Board.cpp
+d:\documents\visual studio 2017\projects\cattleship\cattleship\board.cpp(10): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\documents\visual studio 2017\projects\cattleship\cattleship\board.cpp(226): warning C4018: '>=': signed/unsigned mismatch
+d:\documents\visual studio 2017\projects\cattleship\cattleship\board.cpp(326): warning C4018: '<': signed/unsigned mismatch
   Generating Code...
-  Compiling...
+  Skipping... (no relevant changes detected)
   main.cpp
-  Generating Code...
-  CattleShip.vcxproj -> d:\documents\visual studio 2017\Projects\CattleShip\Debug\CattleShip.exe
-  CattleShip.vcxproj -> d:\documents\visual studio 2017\Projects\CattleShip\Debug\CattleShip.pdb (Partial PDB)
+  Player.cpp
+  GameStatePlay.cpp
+  GameStatePlacement.cpp
+  GameStateMenu.cpp
+  Game.cpp
+  AI.cpp
+  CattleShip.vcxproj -> d:\Documents\Visual Studio 2017\Projects\CattleShip\Debug\CattleShip.exe
+  CattleShip.vcxproj -> d:\Documents\Visual Studio 2017\Projects\CattleShip\Debug\CattleShip.pdb (Partial PDB)

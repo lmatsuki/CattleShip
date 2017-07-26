@@ -145,17 +145,39 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AI.cpp" />
+    <ClCompile Include="Board.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameStateMenu.cpp" />
+    <ClCompile Include="GameStatePlacement.cpp" />
+    <ClCompile Include="GameStatePlay.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="ShipUtilities.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AI.h" />
+    <ClInclude Include="GameStatePlay.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Board.h" />
+    <ClInclude Include="GameState.h" />
+    <ClInclude Include="GameStateMenu.h" />
+    <ClInclude Include="GameStatePlacement.h" />
+    <ClInclude Include="ShipUtilities.h" />
+    <ClInclude Include="ShipOrientation.h" />
+    <ClInclude Include="ShipTypeEnum.h" />
     <ClInclude Include="DifficultyEnum.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="GameStateEnum.h" />
-    <ClInclude Include="Menu.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="SpriteEnum.h" />
+    <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="Tile.h" />
+    <ClInclude Include="TileStateEnum.h" />
+    <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

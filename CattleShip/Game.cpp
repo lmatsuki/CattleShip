@@ -1,114 +1,177 @@
 #include <iostream>
+#include <string>
+#include <sstream>
 #include <SFML/Graphics.hpp>
 #include "Game.h"
-#include "GameStateEnum.h"
+#include "GameStateMenu.h"
+#include "Utilities.h"
 
-Game::Game() : gameState(Menu), backGroundColor(sf::Color(0, 0, 0, 255))
+
+Game::Game() : backGroundColor(sf::Color::Black), playerOne(10, &textureManager),
+	playerTurn(true), playerTwo(10, &textureManager)
 {
-	Init();
+	pushState(new GameStateMenu(this));
+	init();	
 }
 
-void Game::Init()
+Game::~Game()
+{
+	while (!states.empty())
+		popState();
+}
+
+void Game::init()
 {
 	int status = 0;
-	window.create(sf::VideoMode(800, 600), "Cattle Ship");
+	window.create(sf::VideoMode(800, 600), "Cattle Ship", sf::Style::Close);
+	window.setFramerateLimit(60);
 
-	if (!font.loadFromFile("font/arial.ttf"))
+	if (!font.loadFromFile(Utilities::getFontPath("arial.ttf")))
 		status = -1;
 
+	// Create the board	for both players
+	playerOne.init();
+	playerOne.board.init(window);
+	playerOne.board.setBoardFillColor(sf::Color::White);
+	playerTwo.init();
+	playerTwo.board.init(window);
+	playerTwo.board.setBoardFillColor(sf::Color::White);
+
+	// Terminate the game somehow
 	if (status == -1)
-	{
-		// Terminate the game somehow
-		//window.close();
-	}		
+		window.close();
+
+	// For Debugging
+	coordText.setString("Coordinates..");
+	coordText.setFont(font);
 }
 
-void Game::Start()
+void Game::gameLoop()
 {
-	// Game is running
+	sf::Clock clock;
+
 	while (window.isOpen())
 	{
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-				window.close();
-			else if (gameState == Menu)
-			{
-				if (sf::Event::MouseButtonReleased)
-				{
-					if (event.mouseButton.button == sf::Mouse::Left)
-					{
-						std::cout << "Mouse x: " << event.mouseButton.x << std::endl;
-						std::cout << "Mouse y: " << event.mouseButton.y << std::endl;
-					}
-				}
-			}
-		}
+		sf::Time elapsed = clock.restart();
+		float dt = elapsed.asSeconds();
 
-		Render();
+		if (peekState() == nullptr)
+			continue;
+		peekState()->handleInput();
+		peekState()->update(dt);
+		window.clear(sf::Color::Black);
+		peekState()->render(dt);
+		window.display();
 	}
 }
 
-void Game::Render()
+void Game::pushState(GameState* state)
 {
-	window.clear(backGroundColor);
-
-	if (gameState == Menu)
-	{
-		// Display the Title
-		sf::Text text("Cattle Ship", font);
-		text.setCharacterSize(60);
-		text.setStyle(sf::Text::Bold);
-		text.setColor(sf::Color::Green);
-		text.setPosition(GetCenterOfText(text), 0);
-		window.draw(text);
-
-		// Display the options
-		sf::Text text("Play", font);
-		text.setCharacterSize(40);
-		text.setStyle(sf::Text::Bold);
-		text.setColor(sf::Color::White);
-		text.setPosition(GetCenterOfText(text), 0);
-		window.draw(text);
-
-		sf::Text text("Options", font);
-		text.setCharacterSize(40);
-		text.setStyle(sf::Text::Bold);
-		text.setColor(sf::Color::White);
-		text.setPosition(GetCenterOfText(text), 0);
-		window.draw(text);
-
-		sf::Text text("Quit", font);
-		text.setCharacterSize(40);
-		text.setStyle(sf::Text::Bold);
-		text.setColor(sf::Color::White);
-		text.setPosition(GetCenterOfText(text), 0);
-		window.draw(text);
-	} 
-	else if (gameState == Playing)
-	{
-		// Display the board
-
-	}
-	else if (gameState == Settings)
-	{
-		// Display the settings
-
-	}
-	
-	window.display();
+	states.push(state);
 }
 
-sf::Vector2f Game::GetCenterOfScreen()
+void Game::popState()
 {
-	sf::Vector2u centerOfScreen = window.getSize();
-	return sf::Vector2f(centerOfScreen.x / 2, centerOfScreen.y / 2);
+	GameState* currentState = states.top();
+	states.pop();
+	delete currentState;
 }
 
-float Game::GetCenterOfText(sf::Text const &text)
+void Game::changeState(GameState* state)
 {
-	float centerOfText = GetCenterOfScreen().x - text.getLocalBounds().width / 2;
-	return centerOfText;
+	if (!states.empty())
+		popState();
+	pushState(state);
+}
+
+GameState* Game::peekState()
+{
+	if (states.empty())
+		return nullptr;
+	return states.top();
+}
+
+//void Game::Start()
+//{
+//	// Game is running
+//	while (window.isOpen())
+//	{
+//		sf::Event event;
+//		while (window.pollEvent(event))
+//		{
+			// if (gameState == Playing)
+//			{
+//				// Need to check turn, handle click and show appropriate text/image if caught/missed
+//				if (playerTurn)
+//				{
+//					if (event.type == sf::Event::MouseButtonReleased)
+//					{
+//						if (event.mouseButton.button == sf::Mouse::Left)
+//						{
+//							printCoordinates(event.mouseButton.x, event.mouseButton.y);
+//							if (board.ClickedInGrid(event.mouseButton.x, event.mouseButton.y))
+//							{
+//								board.CheckClickedTile(playerTurn, event.mouseButton.x, event.mouseButton.y);
+//								playerTurn = false;
+//							}								
+//						}
+//					}
+//				}
+//				else
+//				{
+//					// AI's turn
+//					playerTurn = true;
+//				}
+//			}
+//		}
+//
+//		Render();
+//	}
+//}
+
+//void Game::Render()
+//{
+//	window.clear(backGroundColor);
+//
+//	if (gameState == Playing)
+//	{
+//		// Display the board
+//		board.Render(window, playerTurn);
+//		window.draw(coordText);
+//	}
+//	else if (gameState == Settings)
+//	{
+//		// Display the settings
+//		// Set difficulty
+//
+//	}
+//	
+//	window.display();
+//}
+
+
+
+// For Debugging purposes
+void Game::printCoordinates(int x, int y)
+{
+	std::ostringstream oss, oss2;
+	oss << x;
+	std::string mouseX = "Mouse x: " + oss.str();
+	oss2 << y;
+	std::string mouseY = "Mouse y: " + oss2.str();
+	coordText.setString(mouseX + " : " + mouseY);
+	coordText.setCharacterSize(25);
+	coordText.setStyle(sf::Text::Bold);
+	coordText.setFillColor(sf::Color::White);
+	coordText.setPosition(0, 0);
+}
+
+void Game::printText(const std::string& text)
+{
+	coordText.setString(text);
+	coordText.setCharacterSize(25);
+	coordText.setStyle(sf::Text::Bold);
+	coordText.setFillColor(sf::Color::White);
+	coordText.setPosition(0, 0);
 }
 

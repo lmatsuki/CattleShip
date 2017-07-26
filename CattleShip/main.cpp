@@ -1,14 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include "Game.h"
+#include "GameStateMenu.h"
 
 int main()
 {
 	Game game;
-	game.Start();
-
-	
-	//sf::CircleShape shape(100.f);
-	//shape.setFillColor(sf::Color::Green);
+	game.gameLoop();
 
 	return 0;
 }
