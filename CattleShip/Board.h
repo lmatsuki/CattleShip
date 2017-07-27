@@ -18,6 +18,7 @@ public:
 	void setBoardSize(const sf::RenderWindow& window);
 	void setBoardFillColor(const sf::Color color);
 	void setBoardPiece(const int boardIndex, const int shipType, const bool shipHorizontal);
+	TileStateEnum setFiredTileIndex(const int tileIndex);
 	void clearOutlineColors();
 
 	int getTileByCoords(const sf::Vector2f mousePosition);
@@ -25,12 +26,10 @@ public:
 	bool getIsValidTileByIndex(const int tilePosition, const int shipSize, const bool shipHorizontal);
 	int getDimensions();
 
-	/*void checkClickedTile(bool playerTurn, const sf::Vector2f position);
-	void checkPlacedTile(const sf::Vector2f position);*/
 	void checkMouseOver(const sf::Vector2f position, const int shipType, const bool shipHorizontal);
 	TileStateEnum checkFiredPosition(const sf::Vector2f mousePosition);
+	TileStateEnum checkFiredTileIndex(const int tileIndex);
 	bool clickedInGrid(float xPos, float yPos);
-	void updateHit(bool hit, bool playerTurn, int col, int row);	
 
 private:
 	const int dimensions;

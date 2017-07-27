@@ -156,6 +156,20 @@ void Board::setBoardPiece(const int boardIndex, const int shipType, const bool s
 	}
 }
 
+TileStateEnum Board::setFiredTileIndex(const int tileIndex)
+{
+	ShipTypeEnum shipType = ShipUtilities::getShipTypeFromBoard(board[tileIndex]);
+	TileStateEnum tileState = Missed;
+
+	if (shipType != None)
+	{
+		tileState = Hit;		
+	}
+
+	ShipUtilities::setTileState(&board, tileIndex, tileState);
+	return tileState;
+}
+
 void Board::clearOutlineColors()
 {
 	int tilesSize = dimensions * dimensions;
@@ -237,44 +251,6 @@ int Board::getDimensions()
 	return dimensions;
 }
 
-//void Board::checkClickedTile(bool playerTurn, const sf::Vector2f position)
-//{
-//	// Parse the coordinates and check if it's a hit or miss
-//	//bool hit = false;
-//	//int row, col;
-//	//row = col = 0;
-//
-//	// Change ShipTypeEnum depending on hit or miss
-//	//UpdateHit(hit, playerTurn, col, row);
-//	int tilesSize = dimensions * dimensions;
-//	for (int i = 0; i < tilesSize; i++)
-//	{
-//		if (tiles[i].getGlobalBounds().contains(sf::Vector2f(position)))
-//		{
-//			int j = 5;
-//		}
-//	}
-//}
-//
-//void Board::checkPlacedTile(const sf::Vector2f position)
-//{
-//	// Find the tile position the ship is placed in
-//	int tilesSize = dimensions * dimensions;
-//	int tilePosition = 0;
-//	for (int i = 0; i < tilesSize; i++)
-//	{
-//		if (tiles[i].getGlobalBounds().contains(position))
-//		{
-//			tilePosition = i;
-//		}
-//	}
-//
-//	// Check if the tiles are valid
-//	//for (int j = 0; j < 5; j++)
-//	//	continue;
-//
-//}
-
 void Board::checkMouseOver(const sf::Vector2f position, const int shipType, const bool shipHorizontal)
 {
 	// Then iterate through the tiles and check if moused over
@@ -336,7 +312,7 @@ void Board::checkMouseOver(const sf::Vector2f position, const int shipType, cons
 
 TileStateEnum Board::checkFiredPosition(const sf::Vector2f mousePosition)
 {
-	int tileIndex = getTileByCoords(mousePosition);
+	int tileIndex = getTileByCoords(mousePosition);	
 
 	if (tileIndex == -1)
 	{
@@ -346,22 +322,26 @@ TileStateEnum Board::checkFiredPosition(const sf::Vector2f mousePosition)
 	else
 	{
 		// Check whether a ship was hit or missed
+		return checkFiredTileIndex(tileIndex);
+	}		
+}
 
+TileStateEnum Board::checkFiredTileIndex(const int tileIndex)
+{
+	TileStateEnum clickedTileState = ShipUtilities::getTileStateFromBoard(board[tileIndex]);
 
-		return Hit; // Set temporarily
+	if (clickedTileState == Empty)
+	{
+		return setFiredTileIndex(tileIndex);
+	}
+	else
+	{
+		// Previously clicked tile
+		return Invalid;
 	}		
 }
 
 bool Board::clickedInGrid(float xPos, float yPos)
 {
 	return boardRect.getGlobalBounds().contains(xPos, yPos);
-}
-
-void Board::updateHit(bool hit, bool playerTurn, int col, int row)
-{	
-	TileStateEnum shipType = hit ? Hit : Missed;
-	//if (playerTurn)	
-	//	std::get<0>(board[col][row]) = shipType;
-	//else
-	//	std::get<1>(board[col][row]) = shipType;
 }

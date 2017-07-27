@@ -16,4 +16,24 @@ namespace ShipUtilities
 		default:			return 0;
 		}
 	}
+
+	// Use the int ship type to get the ShipTypeEnum (1's digit).
+	ShipTypeEnum getShipTypeFromBoard(const int shiptype)
+	{
+		return (ShipTypeEnum)(shiptype % 10);
+	}
+
+	// Use the int tile state to get the TileStateEnum (10's digit).
+	TileStateEnum getTileStateFromBoard(const int tileState)
+	{
+		return (TileStateEnum)(tileState / 10);
+	}
+
+	// Set the tile state of the tile by replacing the 10's digit with the TileStateEnum value.
+	void setTileState(std::vector<int>* board, const int tileIndex, const TileStateEnum tileState)
+	{
+		int currentTileValue = board->at(tileIndex);
+		int shipType = getShipTypeFromBoard(currentTileValue);
+		board->at(tileIndex) = ((int)tileState * 10) + shipType;
+	}
 }
