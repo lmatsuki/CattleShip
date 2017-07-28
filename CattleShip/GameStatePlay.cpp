@@ -4,6 +4,7 @@
 
 GameStatePlay::GameStatePlay(Game * game) : GameState(game)
 {
+	isGameOver = false;
 	// Prepare label font
 	labelFont.loadFromFile(Utilities::getFontPath("arial.ttf"));
 }
@@ -23,13 +24,16 @@ void GameStatePlay::handleInput()
 			game->window.close();
 			break;
 		case sf::Event::MouseButtonReleased:
-			if (event.mouseButton.button == sf::Mouse::Left)
-			{								
-				handleCurrentPlayerClick(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
-			}
-			else if (event.mouseButton.button == sf::Mouse::Right)
+			if (!isGameOver)
 			{
-
+				if (event.mouseButton.button == sf::Mouse::Left)
+				{
+					handleCurrentPlayerClick(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
+				}
+				else if (event.mouseButton.button == sf::Mouse::Right)
+				{
+					game->playerTurn = !game->playerTurn;
+				}
 			}
 			break;
 		case sf::Event::KeyReleased:
@@ -45,7 +49,24 @@ void GameStatePlay::handleInput()
 
 void GameStatePlay::update(const float dt)
 {
+	// If enemy's turn, enemy picks a random tile until it finds an unclicked tile
+	// inside the board based on difficulty setting - Setting not implemented yet
+	TileStateEnum tileState = Invalid;
+	if (!game->playerTurn)
+	{
+		tileState = game->ai.randomlyFire(&game->playerOne);
+	}
 
+	// Need to check game end condition AFTER AI movment and BEFORE turn change
+	if (!isGameOver && getCurrentPlayer()->areAllShipsDead())
+	{
+		isGameOver = true;
+		getOtherPlayer()->won = true;
+	}
+
+	// Only change turns if a valid tile was clicked
+	if (tileState != Invalid)
+		game->playerTurn = !game->playerTurn;
 }
 
 void GameStatePlay::render(const float dt)
@@ -57,12 +78,16 @@ void GameStatePlay::render(const float dt)
 	// Display the board
 	if (game->playerTurn)
 	{
-		game->playerTwo.board.render(game->window);
+		game->playerTwo.board.render(game->window, false);
 	}
 	else
 	{
-		game->playerOne.board.render(game->window);
+		game->playerOne.board.render(game->window, true);
 	}
+
+	// Display winner/loser text
+	if (isGameOver)
+		renderWinner(getCurrentPlayer());
 
 	game->window.draw(game->coordText);
 }
@@ -74,11 +99,33 @@ void GameStatePlay::handleCurrentPlayerClick(const sf::Vector2f mousePosition)
 	if (game->playerTurn)
 		tileState = game->playerTwo.board.checkFiredPosition(mousePosition);
 
-	// Otherwise if enemy's turn, enemy picks a random tile until it finds an unclicked tile
-	// inside the board based on difficulty setting		
+	if (tileState != Invalid)
+		game->playerTurn = !game->playerTurn;
+}
 
-	// Only change turns if a valid tile was clicked
-	//if (tileState != Invalid)
-	//	game->playerTurn = !game->playerTurn;
-	return;
+Player* GameStatePlay::getCurrentPlayer()
+{
+	if (game->playerTurn)
+		return &game->playerOne;
+	else
+		return &game->playerTwo;
+}
+
+Player * GameStatePlay::getOtherPlayer()
+{
+	if (game->playerTurn)
+		return &game->playerTwo;
+	else
+		return &game->playerOne;
+}
+
+void GameStatePlay::renderWinner(Player* player)
+{
+	// If player 1 didn't win, player 2 must have won
+	if (player == &game->playerOne && player->won)
+		Utilities::renderText(labelText, game->window, "You won!!", labelFont, 80, sf::Text::Bold, sf::Color::White,
+			Utilities::getCenterXOfText(game->window, labelText), Utilities::getCenterOfScreen(game->window).y);
+	else
+		Utilities::renderText(labelText, game->window, "You lost!!", labelFont, 80, sf::Text::Bold, sf::Color::White,
+			Utilities::getCenterXOfText(game->window, labelText), Utilities::getCenterOfScreen(game->window).y);
 }

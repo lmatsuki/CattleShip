@@ -11,8 +11,9 @@ public:
 	~Board();
 	void init(const sf::RenderWindow& window);
 	void initializeTiles();
-	void render(sf::RenderWindow& window);
+	void render(sf::RenderWindow& window, const bool renderShips);
 	void renderShip(const int shipType, const sf::Vector2f position, sf::RenderWindow& window);
+	void renderTile(const int tileState, const sf::Vector2f position, sf::RenderWindow& window);
 
 	void setBoardPosition(const sf::RenderWindow& window);
 	void setBoardSize(const sf::RenderWindow& window);
@@ -20,11 +21,14 @@ public:
 	void setBoardPiece(const int boardIndex, const int shipType, const bool shipHorizontal);
 	TileStateEnum setFiredTileIndex(const int tileIndex);
 	void clearOutlineColors();
+	void clearBoard();
 
 	int getTileByCoords(const sf::Vector2f mousePosition);
 	int getValidTileByCoords(const sf::Vector2f mousePosition, const int shipType, const bool shipHorizontal);
 	bool getIsValidTileByIndex(const int tilePosition, const int shipSize, const bool shipHorizontal);
+	bool getShipAliveByTile(const int tileIndex);
 	int getDimensions();
+	int getTotalTiles();
 
 	void checkMouseOver(const sf::Vector2f position, const int shipType, const bool shipHorizontal);
 	TileStateEnum checkFiredPosition(const sf::Vector2f mousePosition);

@@ -36,4 +36,10 @@ namespace ShipUtilities
 		int shipType = getShipTypeFromBoard(currentTileValue);
 		board->at(tileIndex) = ((int)tileState * 10) + shipType;
 	}
+
+	// Whether the shipType represents a vaild ship.
+	bool isShipType(const int shipType)
+	{
+		return shipType > 0 && shipType < 6;
+	}
 }

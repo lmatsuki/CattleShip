@@ -5,5 +5,7 @@
 enum SpriteEnum
 {
 	SpriteGrass = LastShip + 1,
-	LastSprite = SpriteGrass + 1,
+	HitShip,
+	MissedShip,
+	LastSprite = MissedShip + 1,
 };

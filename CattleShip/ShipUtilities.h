@@ -17,4 +17,7 @@ namespace ShipUtilities
 
 	// Set the tile state of the tile by replacing the 10's digit with the TileStateEnum value.
 	void setTileState(std::vector<int>* board, const int tileIndex, const TileStateEnum tileState);
+
+	// Whether the shipType represents a vaild ship.
+	bool isShipType(const int shipType);
 }

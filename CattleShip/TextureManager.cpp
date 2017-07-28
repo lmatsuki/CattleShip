@@ -31,6 +31,10 @@ void TextureManager::LoadTextures()
 	textures->at(Submarine) = texture;
 	texture.loadFromFile(Utilities::getImagesPath("cow_walk.png"), sf::IntRect(0, 128, 128, 128));
 	textures->at(Destroyer) = texture;
+	texture.loadFromFile(Utilities::getImagesPath("hit.png"), sf::IntRect(0, 0, 128, 128));
+	textures->at(HitShip) = texture;
+	texture.loadFromFile(Utilities::getImagesPath("missed.png"), sf::IntRect(0, 0, 128, 128));
+	textures->at(MissedShip) = texture;
 }
 
 sf::Sprite TextureManager::GetSpriteBySpriteType(const SpriteEnum spriteType)

@@ -14,7 +14,11 @@ public:
 	virtual void render(const float dt);
 
 	void handleCurrentPlayerClick(const sf::Vector2f mousePosition);
+	Player* getCurrentPlayer();
+	Player* getOtherPlayer();
+	void renderWinner(Player* player);
 
 	sf::Font labelFont;
 	sf::Text labelText;
+	bool isGameOver;
 };

@@ -35,3 +35,21 @@ void AI::randomPlaceShips(Player * player)
 		}
 	}
 }
+
+TileStateEnum AI::randomlyFire(Player * player)
+{
+	const int totalTiles = player->board.getTotalTiles();
+	TileStateEnum tileState = Invalid;
+	int tileIndex = 0;
+
+	// Randomize the seed
+	srand(time(NULL));
+
+	while (tileState == Invalid)
+	{
+		tileIndex = rand() % totalTiles;
+		tileState = player->board.checkFiredTileIndex(tileIndex);
+	}
+
+	return tileState;
+}

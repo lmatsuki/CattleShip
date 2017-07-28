@@ -46,7 +46,7 @@ void Board::initializeTiles()
 	}
 }
 
-void Board::render(sf::RenderWindow& window)
+void Board::render(sf::RenderWindow& window, const bool renderShips)
 {
 	window.draw(boardRect);
 
@@ -64,9 +64,14 @@ void Board::render(sf::RenderWindow& window)
 	for (int i = 0; i < tilesSize; i++)
 	{
 		window.draw(tiles[i]);
-		renderShip(board[i], tiles[i].getPosition(), window);
-		// Render player/enemy specific ships with hit/miss marks
 
+		// Don't render the enemy ships unless Hit
+		TileStateEnum tileState = ShipUtilities::getTileStateFromBoard(board[i]);
+		if (renderShips || tileState == Hit)
+			renderShip(ShipUtilities::getShipTypeFromBoard(board[i]), tiles[i].getPosition(), window);
+
+		// Render player/enemy specific ships with hit/miss marks
+		renderTile(tileState, tiles[i].getPosition(), window);
 	}
 }
 
@@ -106,6 +111,29 @@ void Board::renderShip(const int shipType, const sf::Vector2f position, sf::Rend
 		sprite = textureManager->GetSpriteByShipType(Destroyer);
 		sprite.setPosition(adjustedPosition);
 		sprite.setScale(0.85f, 0.85f);
+		window.draw(sprite);
+		break;
+	}
+}
+
+void Board::renderTile(const int tileState, const sf::Vector2f position, sf::RenderWindow& window)
+{
+	// Offset for tile images
+	sf::Vector2f adjustedPosition = sf::Vector2f(position.x + 10, position.y + 0);
+	sf::Sprite sprite;
+
+	switch ((TileStateEnum)tileState)
+	{
+	case Hit:
+		sprite = textureManager->GetSpriteBySpriteType(HitShip);
+		sprite.setPosition(sf::Vector2f(position.x + 10, position.y + 0));
+		sprite.setScale(0.35f, 0.35f);
+		window.draw(sprite);
+		break;
+	case Missed:
+		sprite = textureManager->GetSpriteBySpriteType(MissedShip);
+		sprite.setPosition(sf::Vector2f(position.x + 13, position.y + 5));
+		sprite.setScale(0.3f, 0.3f);
 		window.draw(sprite);
 		break;
 	}
@@ -179,6 +207,15 @@ void Board::clearOutlineColors()
 	}
 }
 
+void Board::clearBoard()
+{
+	int totalSize = getTotalTiles();
+	for (int i = 0; i < totalSize; i++)
+	{
+		board[i] = 0;
+	}
+}
+
 // Gets the tile index if clicked inside the board. Returns as soon as the tile is found.
 int Board::getTileByCoords(const sf::Vector2f mousePosition)
 {
@@ -246,9 +283,26 @@ bool Board::getIsValidTileByIndex(const int tilePosition, const int shipSize, co
 	return true;
 }
 
+bool Board::getShipAliveByTile(const int tileIndex)
+{
+	// If no ship, not alive
+	ShipTypeEnum shipType = ShipUtilities::getShipTypeFromBoard(board[tileIndex]);
+	if (shipType == None)
+		return false;
+
+	// If tile is not Hit, the ship is alive
+	TileStateEnum tileState = ShipUtilities::getTileStateFromBoard(board[tileIndex]);
+	return tileState != Hit;
+}
+
 int Board::getDimensions()
 {
 	return dimensions;
+}
+
+int Board::getTotalTiles()
+{
+	return dimensions * dimensions;
 }
 
 void Board::checkMouseOver(const sf::Vector2f position, const int shipType, const bool shipHorizontal)

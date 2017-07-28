@@ -12,6 +12,10 @@ GameStatePlacement::GameStatePlacement(Game* game) : GameState(game)
 
 	// Prepare label font
 	labelFont.loadFromFile(Utilities::getFontPath("arial.ttf"));
+
+	// Clear the board in case it's a consecutive game
+	game->playerOne.init();
+	game->playerTwo.init();
 }
 
 void GameStatePlacement::handleInput()
@@ -97,6 +101,6 @@ void GameStatePlacement::render(const float dt)
 	game->playerOne.renderCurrentShip(game->window);
 
 	// Display the board
-	game->playerOne.board.render(game->window);
+	game->playerOne.board.render(game->window, true);
 	game->window.draw(game->coordText);
 }
