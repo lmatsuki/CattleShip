@@ -6,7 +6,7 @@ class Player
 {
 public:
 	Player(const int dimension, TextureManager* textureManager);
-	void init();
+	void init(const sf::RenderWindow& window);
 	void renderCurrentShip(sf::RenderWindow& window);
 	bool areAllShipsDead();
 

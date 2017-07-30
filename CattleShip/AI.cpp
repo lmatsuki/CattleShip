@@ -36,6 +36,21 @@ void AI::randomPlaceShips(Player * player)
 	}
 }
 
+TileStateEnum AI::fireBasedOnDifficulty(Player * player, DifficultyEnum difficulty)
+{
+	switch (difficulty)
+	{
+	Easy:
+		return randomlyFire(player);
+	Medium:
+		break;
+	Hard:
+		break;
+	default:
+		return Invalid;
+	}
+}
+
 TileStateEnum AI::randomlyFire(Player * player)
 {
 	const int totalTiles = player->board.getTotalTiles();
@@ -53,3 +68,5 @@ TileStateEnum AI::randomlyFire(Player * player)
 
 	return tileState;
 }
+
+

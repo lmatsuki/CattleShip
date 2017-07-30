@@ -30,12 +30,8 @@ void Game::init()
 		status = -1;
 
 	// Create the board	for both players
-	playerOne.init();
-	playerOne.board.init(window);
-	playerOne.board.setBoardFillColor(sf::Color::White);
-	playerTwo.init();
-	playerTwo.board.init(window);
-	playerTwo.board.setBoardFillColor(sf::Color::White);
+	playerOne.init(window);
+	playerTwo.init(window);
 
 	// Terminate the game somehow
 	if (status == -1)
@@ -90,66 +86,6 @@ GameState* Game::peekState()
 		return nullptr;
 	return states.top();
 }
-
-//void Game::Start()
-//{
-//	// Game is running
-//	while (window.isOpen())
-//	{
-//		sf::Event event;
-//		while (window.pollEvent(event))
-//		{
-			// if (gameState == Playing)
-//			{
-//				// Need to check turn, handle click and show appropriate text/image if caught/missed
-//				if (playerTurn)
-//				{
-//					if (event.type == sf::Event::MouseButtonReleased)
-//					{
-//						if (event.mouseButton.button == sf::Mouse::Left)
-//						{
-//							printCoordinates(event.mouseButton.x, event.mouseButton.y);
-//							if (board.ClickedInGrid(event.mouseButton.x, event.mouseButton.y))
-//							{
-//								board.CheckClickedTile(playerTurn, event.mouseButton.x, event.mouseButton.y);
-//								playerTurn = false;
-//							}								
-//						}
-//					}
-//				}
-//				else
-//				{
-//					// AI's turn
-//					playerTurn = true;
-//				}
-//			}
-//		}
-//
-//		Render();
-//	}
-//}
-
-//void Game::Render()
-//{
-//	window.clear(backGroundColor);
-//
-//	if (gameState == Playing)
-//	{
-//		// Display the board
-//		board.Render(window, playerTurn);
-//		window.draw(coordText);
-//	}
-//	else if (gameState == Settings)
-//	{
-//		// Display the settings
-//		// Set difficulty
-//
-//	}
-//	
-//	window.display();
-//}
-
-
 
 // For Debugging purposes
 void Game::printCoordinates(int x, int y)

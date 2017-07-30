@@ -14,8 +14,8 @@ GameStatePlacement::GameStatePlacement(Game* game) : GameState(game)
 	labelFont.loadFromFile(Utilities::getFontPath("arial.ttf"));
 
 	// Clear the board in case it's a consecutive game
-	game->playerOne.init();
-	game->playerTwo.init();
+	game->playerOne.init(game->window);
+	game->playerTwo.init(game->window);
 }
 
 void GameStatePlacement::handleInput()

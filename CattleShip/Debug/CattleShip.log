@@ -1,7 +1,4 @@
-﻿  Player.cpp
-  GameStatePlacement.cpp
-d:\documents\visual studio 2017\projects\cattleship\cattleship\gamestateplacement.cpp(34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-d:\documents\visual studio 2017\projects\cattleship\cattleship\gamestateplacement.cpp(91): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-  Generating Code...
+﻿  GameStatePlay.cpp
+d:\documents\visual studio 2017\projects\cattleship\cattleship\gamestateplay.cpp(31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   CattleShip.vcxproj -> d:\Documents\Visual Studio 2017\Projects\CattleShip\Debug\CattleShip.exe
   CattleShip.vcxproj -> d:\Documents\Visual Studio 2017\Projects\CattleShip\Debug\CattleShip.pdb (Partial PDB)

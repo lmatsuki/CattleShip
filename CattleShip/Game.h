@@ -5,6 +5,7 @@
 #include "TextureManager.h"
 #include "Player.h"
 #include "AI.h"
+#include "Settings.h"
 
 class GameState;
 
@@ -27,6 +28,7 @@ public:
 	Player playerTwo;
 	bool playerTurn;
 	TextureManager textureManager;
+	Settings settings;
 	AI ai;
 
 	// DEBUG

@@ -8,11 +8,13 @@ Player::Player(const int dimension, TextureManager* textureManager) :
 	
 }
 
-void Player::init()
+void Player::init(const sf::RenderWindow& window)
 {
 	currentShipSelection = FirstShip;
 	won = false;
 	board.clearBoard();
+	board.init(window);
+	board.setBoardFillColor(sf::Color::White);
 }
 
 void Player::renderCurrentShip(sf::RenderWindow & window)

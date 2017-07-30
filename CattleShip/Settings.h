@@ -6,6 +6,7 @@ class Settings
 {
 public:
 	Settings();
+	DifficultyEnum getDifficulty();
 
 private:
 	DifficultyEnum difficulty;
