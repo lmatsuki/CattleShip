@@ -37,8 +37,8 @@ void GameStatePlacement::handleInput()
 			else if (event.mouseButton.button == sf::Mouse::Right)
 			{
 				// To revert selection - For debugging only
-				if (game->playerOne.currentShipSelection > 0)
-					game->playerOne.currentShipSelection--;
+				//if (game->playerOne.currentShipSelection > 0)
+				//	game->playerOne.currentShipSelection--;
 			}
 			break;
 		case sf::Event::KeyReleased:

@@ -10,3 +10,8 @@ DifficultyEnum Settings::getDifficulty()
 	return difficulty;
 }
 
+void Settings::setDifficulty(const DifficultyEnum newDifficulty)
+{
+	difficulty = newDifficulty;
+}
+

@@ -161,6 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AI.h" />
+    <ClInclude Include="DirectionEnum.h" />
     <ClInclude Include="GameStatePlay.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Board.h" />

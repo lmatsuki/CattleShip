@@ -30,6 +30,27 @@ namespace Utilities
 		window.draw(text);
 	}
 
+	// Prepare the text using all the parameters.
+	void prepareText(sf::Text& text, const std::string& textString,
+		const sf::Font& font, int size, const sf::Uint32& style, const sf::Color& color,
+		float xPos, float yPos)
+	{
+		text.setFont(font);
+		text.setString(textString);
+		text.setCharacterSize(size);
+		text.setStyle(style);
+		text.setFillColor(color);
+		text.setPosition(xPos, yPos);
+	}
+
+	// Color the first selected text while coloring other texts white.
+	void selectDifficulty(sf::Text & selectedText, sf::Text & secondText, sf::Text & thirdText)
+	{
+		selectedText.setFillColor(sf::Color::Cyan);
+		secondText.setFillColor(sf::Color::White);
+		thirdText.setFillColor(sf::Color::White);
+	}
+
 	// Returns the full font directory path with the font name.
 	std::string getFontPath(const std::string& fontName)
 	{

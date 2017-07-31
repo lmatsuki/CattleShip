@@ -27,6 +27,9 @@ public:
 	int getValidTileByCoords(const sf::Vector2f mousePosition, const int shipType, const bool shipHorizontal);
 	bool getIsValidTileByIndex(const int tilePosition, const int shipSize, const bool shipHorizontal);
 	bool getShipAliveByTile(const int tileIndex);
+	// Get empty tile to intentionally miss
+	bool getTileIsEmpty(const int tileIndex);
+	ShipTypeEnum getShipByTile(const int tileIndex);
 	int getDimensions();
 	int getTotalTiles();
 

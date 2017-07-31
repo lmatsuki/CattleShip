@@ -191,7 +191,7 @@ TileStateEnum Board::setFiredTileIndex(const int tileIndex)
 
 	if (shipType != None)
 	{
-		tileState = Hit;		
+		tileState = Hit;	
 	}
 
 	ShipUtilities::setTileState(&board, tileIndex, tileState);
@@ -293,6 +293,22 @@ bool Board::getShipAliveByTile(const int tileIndex)
 	// If tile is not Hit, the ship is alive
 	TileStateEnum tileState = ShipUtilities::getTileStateFromBoard(board[tileIndex]);
 	return tileState != Hit;
+}
+
+bool Board::getTileIsEmpty(const int tileIndex)
+{
+	// If there is a ship, it's not empty
+	ShipTypeEnum shipType = ShipUtilities::getShipTypeFromBoard(board[tileIndex]);
+	if (shipType != None)
+		return false;
+
+	TileStateEnum tileState = ShipUtilities::getTileStateFromBoard(board[tileIndex]);
+	return tileState == Empty;
+}
+
+ShipTypeEnum Board::getShipByTile(const int tileIndex)
+{
+	return ShipUtilities::getShipTypeFromBoard(board[tileIndex]);
 }
 
 int Board::getDimensions()

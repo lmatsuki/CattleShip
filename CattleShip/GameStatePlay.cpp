@@ -78,8 +78,8 @@ void GameStatePlay::render(const float dt)
 	// Display the board
 	if (game->playerTurn)
 	{
-		/*game->playerTwo.board.render(game->window, false);*/
-		game->playerOne.board.render(game->window, true);
+		game->playerTwo.board.render(game->window, false);
+		//game->playerOne.board.render(game->window, true);
 	}
 	else
 	{
