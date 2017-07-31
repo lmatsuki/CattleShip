@@ -356,7 +356,9 @@ void Board::checkMouseOver(const sf::Vector2f position, const int shipType, cons
 		for (int j = 0; j < shipSize; j++)
 		{
 			if (j == 0)
+			{
 				tiles[tileIndex].setOutlineColor(outlineColor);
+			}
 			else
 			{
 				int offSet = (j + 1) / 2;
