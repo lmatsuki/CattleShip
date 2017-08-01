@@ -55,7 +55,7 @@ void Game::gameLoop()
 			continue;
 		peekState()->handleInput();
 		peekState()->update(dt);
-		window.clear(sf::Color::Black);
+		window.clear(backGroundColor);
 		peekState()->render(dt);
 		window.display();
 	}

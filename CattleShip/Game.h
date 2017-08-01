@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "AI.h"
 #include "Settings.h"
+#include "Effects.h"
 
 class GameState;
 
@@ -36,6 +37,7 @@ public:
 	void printText(const std::string& text);
 	sf::Text coordText;
 private:
+	Effects effects;
 	sf::Color backGroundColor;
 	sf::Font font;
 };
