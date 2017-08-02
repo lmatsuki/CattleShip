@@ -37,6 +37,9 @@ void Game::init()
 	if (status == -1)
 		window.close();
 
+	// Initialize the effects
+	effects.init(window);
+
 	// For Debugging
 	coordText.setString("Coordinates..");
 	coordText.setFont(font);

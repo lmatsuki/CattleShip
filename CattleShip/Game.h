@@ -36,8 +36,8 @@ public:
 	void printCoordinates(int x, int y);
 	void printText(const std::string& text);
 	sf::Text coordText;
-private:
 	Effects effects;
+private:	
 	sf::Color backGroundColor;
 	sf::Font font;
 };

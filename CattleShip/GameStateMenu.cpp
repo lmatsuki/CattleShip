@@ -31,6 +31,10 @@ void GameStateMenu::handleInput()
 					if (handleLeftClick(event.mouseButton.x, event.mouseButton.y))
 						return;
 				}
+				else if (event.mouseButton.button == sf::Mouse::Right)
+				{
+					game->effects.setFadeProperies(100, sf::Color::Red);
+				}
 				break;
 			case sf::Event::KeyReleased:
 				if (event.key.code == sf::Keyboard::Escape)
@@ -44,7 +48,7 @@ void GameStateMenu::handleInput()
 
 void GameStateMenu::update(const float dt)
 {
-
+	game->effects.fadeIn(0, 0);
 }
 
 void GameStateMenu::render(const float dt)
@@ -79,6 +83,7 @@ void GameStateMenu::render(const float dt)
 	}
 	
 	//game->window.draw(game->coordText);
+	game->effects.render(game->window);
 }
 
 void GameStateMenu::initialize()
