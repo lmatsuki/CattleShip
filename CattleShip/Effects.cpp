@@ -28,9 +28,39 @@ void Effects::init(const sf::RenderWindow& window)
 	quadScreen[3].color = sf::Color::Transparent;
 }
 
+void Effects::update()
+{
+	if (frameCount > 0)
+	{
+		switch (tween)
+		{
+		case In:
+			fadeColor.a = fadeColor.a <= 0 ? 0 : fadeColor.a - 1;
+			break;
+		case Out:
+			fadeColor.a = fadeColor.a >= 255 ? 255 : fadeColor.a + 1;
+			break;
+		}
+		
+		quadScreen[0].color = fadeColor;
+		quadScreen[1].color = fadeColor;
+		quadScreen[2].color = fadeColor;
+		quadScreen[3].color = fadeColor;
+		frameCount--;
+	}
+}
+
 void Effects::render(sf::RenderWindow & window)
 {
 	window.draw(quadScreen);
+}
+
+void Effects::startFade(const int frames, TweenEnum tweenState, sf::Color newFadeColor)
+{
+	fading = true;
+	fadeColor = newFadeColor;
+	tween = tweenState;
+	frameCount = frames;
 }
 
 void Effects::setFadeProperies(const int frames, sf::Color newFadeColor)

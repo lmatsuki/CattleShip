@@ -33,7 +33,7 @@ void GameStateMenu::handleInput()
 				}
 				else if (event.mouseButton.button == sf::Mouse::Right)
 				{
-					game->effects.setFadeProperies(100, sf::Color::Red);
+					game->effects.startFade(500, In, sf::Color(255, 0, 0));
 				}
 				break;
 			case sf::Event::KeyReleased:
@@ -48,7 +48,7 @@ void GameStateMenu::handleInput()
 
 void GameStateMenu::update(const float dt)
 {
-	game->effects.fadeIn(0, 0);
+	game->effects.update();
 }
 
 void GameStateMenu::render(const float dt)
