@@ -2,7 +2,11 @@
 
 enum TweenEnum
 {
-	In,
-	Out,
-	InOut,
+	Linear,
+	QuadEaseIn,
+	QuadEaseOut,
+	CubicEaseIn,
+	CubicEaseOut,
+	SineEaseIn,
+	SineEaseOut,
 };

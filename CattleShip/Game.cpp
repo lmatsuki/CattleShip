@@ -111,6 +111,6 @@ void Game::printText(const std::string& text)
 	coordText.setCharacterSize(25);
 	coordText.setStyle(sf::Text::Bold);
 	coordText.setFillColor(sf::Color::White);
-	coordText.setPosition(0, 0);
+	coordText.setPosition(0, 570);
 }
 

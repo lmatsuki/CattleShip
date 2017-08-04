@@ -70,4 +70,9 @@ namespace Utilities
 
 		return x + y * dimension;
 	}
+
+	float clamp(float n, float lo, float hi)
+	{
+		return std::max(lo, std::min(n, hi));
+	}
 }

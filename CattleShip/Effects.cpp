@@ -1,6 +1,7 @@
 #include "Effects.h"
 
-Effects::Effects() : fading(false), fadeColor(sf::Color::Black), frameCount(0)
+Effects::Effects() : fading(false), fadeColor(sf::Color::Black), 
+	duration(0), clockBegin(0)
 {
 	
 }
@@ -28,25 +29,27 @@ void Effects::init(const sf::RenderWindow& window)
 	quadScreen[3].color = sf::Color::Transparent;
 }
 
-void Effects::update()
-{
-	if (frameCount > 0)
+void Effects::update(const float dt)
+{	
+	if (fading)
 	{
-		switch (tween)
+		float currentTime = std::clock() / (float)CLOCKS_PER_SEC;
+		elapsedTime = (std::clock() - clockBegin) / (float)CLOCKS_PER_SEC;
+		if (duration > elapsedTime)
 		{
-		case In:
-			fadeColor.a = fadeColor.a <= 0 ? 0 : fadeColor.a - 1;
-			break;
-		case Out:
-			fadeColor.a = fadeColor.a >= 255 ? 255 : fadeColor.a + 1;
-			break;
+			float tweenValue = Utilities::clamp((elapsedTime / duration) * 255, 0.0f, 255.0f);
+			fadeColor.a = getTweenValue(elapsedTime, 0, 255, duration);
+
+			quadScreen[0].color = fadeColor;
+			quadScreen[1].color = fadeColor;
+			quadScreen[2].color = fadeColor;
+			quadScreen[3].color = fadeColor;
 		}
-		
-		quadScreen[0].color = fadeColor;
-		quadScreen[1].color = fadeColor;
-		quadScreen[2].color = fadeColor;
-		quadScreen[3].color = fadeColor;
-		frameCount--;
+		else
+		{
+			duration = 0;
+			fading = false;
+		}
 	}
 }
 
@@ -55,44 +58,41 @@ void Effects::render(sf::RenderWindow & window)
 	window.draw(quadScreen);
 }
 
-void Effects::startFade(const int frames, TweenEnum tweenState, sf::Color newFadeColor)
+void Effects::startFade(const float newDuration, TweenEnum tweenState, sf::Color newFadeColor)
 {
 	fading = true;
+	clockBegin = std::clock();
 	fadeColor = newFadeColor;
 	tween = tweenState;
-	frameCount = frames;
+	duration = newDuration;
 }
 
-void Effects::setFadeProperies(const int frames, sf::Color newFadeColor)
+float Effects::getTweenValue(const float time, const float begin, const float change, const float duration)
 {
-	if (!fading)
+	float t = time / duration;
+	switch (tween)
 	{
-		frameCount = frames;
-		fadeColor = newFadeColor;
+	case Linear:
+		return change * time / duration + begin;// = tweenValue * clock() / duration;
+	case QuadEaseIn:
+		return change * t * t + begin;
+	case QuadEaseOut:
+		return -change * t * (t - 2) + begin;
+	case CubicEaseIn:
+		return change * t * t * t + begin;
+	case CubicEaseOut:
+		t--;
+		return change * (t * t * t + 1) + begin;
+	case SineEaseIn:
+		return -change * cos(time / duration * (M_PI / 2)) + change + begin;
+	case SineEaseOut:
+		return change * sin(time / duration * (M_PI / 2)) + begin;
+	default:
+		return 0;
 	}
 }
 
-void Effects::fadeIn(const int frames, const float duration)
+std::string Effects::getElapsedTime()
 {
-	if (frameCount > 0)
-	{
-		frameCount--;
-		quadScreen[0].color = fadeColor;
-		quadScreen[2].color = fadeColor;
-	}
-	else
-	{
-		quadScreen[0].color = sf::Color::Transparent;
-		quadScreen[2].color = sf::Color::Transparent;
-	}
-}
-
-void Effects::fadeOut(const float duration, sf::Color fadeColor)
-{
-
-}
-
-void Effects::setFadeColor(const sf::Color color)
-{
-	fadeColor = color;
+	return std::to_string(elapsedTime);
 }

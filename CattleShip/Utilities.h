@@ -31,4 +31,7 @@ namespace Utilities
 
 	// Convert the passed in x,y indices of a board to an index.
 	int convertIndicesToIndex(const int x, const int y, const int dimension);
+
+	// Clamp function for floats.
+	float clamp(float n, float lo, float hi);
 }

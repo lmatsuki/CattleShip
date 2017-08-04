@@ -1,7 +1,13 @@
 #pragma once
 
+#include <time.h>
+#include <math.h>
+#include <algorithm>
 #include <SFML/Graphics.hpp>
 #include "TweenEnum.h"
+#include "Utilities.h"
+
+# define M_PI           3.14159265358979323846  /* pi */
 
 class Effects
 {
@@ -10,20 +16,20 @@ public:
 	~Effects();
 
 	void init(const sf::RenderWindow& window);
-	void update();
+	void update(const float dt);
 	void render(sf::RenderWindow& window);
 
 	// Need general functions for fade in/out
-	void startFade(const int frames, TweenEnum tweenState, sf::Color newFadeColor = sf::Color::Transparent);
-	void setFadeProperies(const int frames, sf::Color newFadeColor = sf::Color::Transparent);
-	void fadeIn(const int frames, const float duration);
-	void fadeOut(const float duration, sf::Color fadeColor = sf::Color::Transparent);
-	void setFadeColor(const sf::Color color);
+	void startFade(const float newDuration, TweenEnum tweenState, sf::Color newFadeColor = sf::Color::Transparent);
+	float getTweenValue(const float time, const float begin, const float change, const float duration);
+	std::string getElapsedTime();
 
 private:
 	sf::VertexArray quadScreen;
 	sf::Color fadeColor;
 	TweenEnum tween;
-	float frameCount;
+	float duration;
+	float elapsedTime;
+	std::clock_t clockBegin;
 	bool fading;
 };
