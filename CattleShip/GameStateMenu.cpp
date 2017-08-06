@@ -33,7 +33,7 @@ void GameStateMenu::handleInput()
 				}
 				else if (event.mouseButton.button == sf::Mouse::Right)
 				{
-					game->effects.startFade(2, SineEaseOut, sf::Color(0, 0, 0));
+					game->effects.startFade(4, SineEaseInOut, sf::Color(0, 0, 0), 1);
 				}
 				break;
 			case sf::Event::KeyReleased:

@@ -1,7 +1,7 @@
 #include "Effects.h"
 
 Effects::Effects() : fading(false), fadeColor(sf::Color::Black), 
-	duration(0), clockBegin(0)
+	duration(0), clockBegin(0), pauseDuration(0)
 {
 	
 }
@@ -35,11 +35,9 @@ void Effects::update(const float dt)
 	{
 		float currentTime = std::clock() / (float)CLOCKS_PER_SEC;
 		elapsedTime = (std::clock() - clockBegin) / (float)CLOCKS_PER_SEC;
-		if (duration > elapsedTime)
+		if (duration + pauseDuration > elapsedTime)
 		{
-			float tweenValue = Utilities::clamp((elapsedTime / duration) * 255, 0.0f, 255.0f);
-			fadeColor.a = getTweenValue(elapsedTime, 0, 255, duration);
-
+			fadeColor.a = getTweenValue(elapsedTime, 0, 255, duration, tween);
 			quadScreen[0].color = fadeColor;
 			quadScreen[1].color = fadeColor;
 			quadScreen[2].color = fadeColor;
@@ -49,6 +47,7 @@ void Effects::update(const float dt)
 		{
 			duration = 0;
 			fading = false;
+			pauseDuration = 0;
 		}
 	}
 }
@@ -58,22 +57,25 @@ void Effects::render(sf::RenderWindow & window)
 	window.draw(quadScreen);
 }
 
-void Effects::startFade(const float newDuration, TweenEnum tweenState, sf::Color newFadeColor)
+void Effects::startFade(const float newDuration, const TweenEnum tweenState, const sf::Color newFadeColor,
+	const float newPauseDuration)
 {
 	fading = true;
 	clockBegin = std::clock();
 	fadeColor = newFadeColor;
 	tween = tweenState;
 	duration = newDuration;
+	pauseDuration = newPauseDuration;
 }
 
-float Effects::getTweenValue(const float time, const float begin, const float change, const float duration)
+float Effects::getTweenValue(const float time, const float begin, const float change, const float duration,
+	const TweenEnum tweenType)
 {
 	float t = time / duration;
-	switch (tween)
+	switch (tweenType)
 	{
 	case Linear:
-		return change * time / duration + begin;// = tweenValue * clock() / duration;
+		return change * t + begin;
 	case QuadEaseIn:
 		return change * t * t + begin;
 	case QuadEaseOut:
@@ -84,9 +86,16 @@ float Effects::getTweenValue(const float time, const float begin, const float ch
 		t--;
 		return change * (t * t * t + 1) + begin;
 	case SineEaseIn:
-		return -change * cos(time / duration * (M_PI / 2)) + change + begin;
+		return -change * cos(t * (M_PI / 2)) + change + begin;
 	case SineEaseOut:
-		return change * sin(time / duration * (M_PI / 2)) + begin;
+		return change * sin(t * (M_PI / 2)) + begin;
+	case SineEaseInOut:
+		if (time < getPauseStartTime())		// Fade in
+			return 255 - getTweenValue(time * 2, begin, change, duration, SineEaseIn);
+		else if (time > getPauseEndTime())  // Fade out
+			return 255 - getTweenValue((time - 1) * 2, begin, change, duration, SineEaseOut);
+		else								// Pause delay
+			return 0;
 	default:
 		return 0;
 	}
@@ -95,4 +104,19 @@ float Effects::getTweenValue(const float time, const float begin, const float ch
 std::string Effects::getElapsedTime()
 {
 	return std::to_string(elapsedTime);
+}
+
+std::string Effects::getCurrentAlpha()
+{
+	return std::to_string(fadeColor.a);
+}
+
+float Effects::getPauseStartTime()
+{
+	return duration / 2.0f;
+}
+
+float Effects::getPauseEndTime()
+{
+	return getPauseStartTime() + pauseDuration;
 }

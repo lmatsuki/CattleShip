@@ -9,4 +9,5 @@ enum TweenEnum
 	CubicEaseOut,
 	SineEaseIn,
 	SineEaseOut,
+	SineEaseInOut,
 };

@@ -19,17 +19,20 @@ public:
 	void update(const float dt);
 	void render(sf::RenderWindow& window);
 
-	// Need general functions for fade in/out
-	void startFade(const float newDuration, TweenEnum tweenState, sf::Color newFadeColor = sf::Color::Transparent);
-	float getTweenValue(const float time, const float begin, const float change, const float duration);
+	void startFade(const float newDuration, const TweenEnum tweenState, const sf::Color newFadeColor = sf::Color::Transparent, const float newPauseDuration = 0);
+	float getTweenValue(const float time, const float begin, const float change, const float duration, const TweenEnum tweenType);
 	std::string getElapsedTime();
-
+	std::string getCurrentAlpha();
+	float getPauseStartTime();
+	float getPauseEndTime();
+	
 private:
 	sf::VertexArray quadScreen;
 	sf::Color fadeColor;
 	TweenEnum tween;
 	float duration;
 	float elapsedTime;
+	float pauseDuration;
 	std::clock_t clockBegin;
-	bool fading;
+	bool fading;	
 };

@@ -156,6 +156,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="ShipUtilities.cpp" />
+    <ClCompile Include="Subject.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Utilities.cpp" />
@@ -164,7 +165,9 @@
     <ClInclude Include="AI.h" />
     <ClInclude Include="DirectionEnum.h" />
     <ClInclude Include="Effects.h" />
+    <ClInclude Include="EventsEnum.h" />
     <ClInclude Include="GameStatePlay.h" />
+    <ClInclude Include="Observer.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="GameState.h" />
@@ -177,6 +180,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SpriteEnum.h" />
+    <ClInclude Include="Subject.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileStateEnum.h" />
