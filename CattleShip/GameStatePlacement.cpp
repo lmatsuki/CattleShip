@@ -16,6 +16,7 @@ GameStatePlacement::GameStatePlacement(Game* game) : GameState(game)
 	// Clear the board in case it's a consecutive game
 	game->playerOne.init(game->window);
 	game->playerTwo.init(game->window);
+	game->effects.startFade(0.5f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeIn);
 }
 
 void GameStatePlacement::handleInput()
@@ -88,7 +89,9 @@ void GameStatePlacement::update(const float dt)
 	// Check mouse over
 	sf::Vector2f mousePosition = sf::Vector2f(sf::Mouse::getPosition(game->window));
 	game->playerOne.board.checkMouseOver(mousePosition, game->playerOne.currentShipSelection, shipHorizontal);
-	game->printCoordinates(mousePosition.x, mousePosition.y);
+	//game->printCoordinates(mousePosition.x, mousePosition.y);
+
+	game->effects.update(dt);
 }
 
 void GameStatePlacement::render(const float dt)
@@ -102,5 +105,6 @@ void GameStatePlacement::render(const float dt)
 
 	// Display the board
 	game->playerOne.board.render(game->window, true);
-	game->window.draw(game->coordText);
+	//game->window.draw(game->coordText);
+	game->effects.render(game->window);
 }

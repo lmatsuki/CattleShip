@@ -31,7 +31,10 @@ public:
 	sf::Text hardText;
 	sf::Text backText;	
 
+	sf::Sprite backgroundSprite;
+
 private:
 	bool initialized;
 	bool displaySettings;
+	bool starting;
 };

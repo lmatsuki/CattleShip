@@ -46,7 +46,7 @@ namespace Utilities
 	// Color the first selected text while coloring other texts white.
 	void selectDifficulty(sf::Text & selectedText, sf::Text & secondText, sf::Text & thirdText)
 	{
-		selectedText.setFillColor(sf::Color::Cyan);
+		selectedText.setFillColor(sf::Color::Green);
 		secondText.setFillColor(sf::Color::White);
 		thirdText.setFillColor(sf::Color::White);
 	}

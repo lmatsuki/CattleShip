@@ -35,6 +35,8 @@ void TextureManager::LoadTextures()
 	textures->at(HitShip) = texture;
 	texture.loadFromFile(Utilities::getImagesPath("missed.png"), sf::IntRect(0, 0, 128, 128));
 	textures->at(MissedShip) = texture;
+	texture.loadFromFile(Utilities::getImagesPath("cattleship-bg.png"), sf::IntRect(0, 0, 800, 600));
+	textures->at(MenuBackground) = texture;
 }
 
 sf::Sprite TextureManager::GetSpriteBySpriteType(const SpriteEnum spriteType)

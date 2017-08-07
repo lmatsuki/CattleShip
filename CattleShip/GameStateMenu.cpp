@@ -2,12 +2,14 @@
 #include "GameStatePlacement.h"
 #include "Utilities.h"
 
-GameStateMenu::GameStateMenu(Game* game) : displaySettings(false), initialized(false), GameState(game)
+GameStateMenu::GameStateMenu(Game* game) : displaySettings(false), initialized(false), GameState(game),
+	starting(false)
 {
 	// Prepare title font
 	titleFont.loadFromFile(Utilities::getFontPath("arial.ttf"));
 	// Prepare menu font
 	menuFont.loadFromFile(Utilities::getFontPath("arial.ttf"));
+	game->effects.startFade(0.5f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeIn);
 }
 
 GameStateMenu::~GameStateMenu()
@@ -28,12 +30,11 @@ void GameStateMenu::handleInput()
 			case sf::Event::MouseButtonReleased:
 				if (event.mouseButton.button == sf::Mouse::Left)
 				{
-					if (handleLeftClick(event.mouseButton.x, event.mouseButton.y))
-						return;
-				}
-				else if (event.mouseButton.button == sf::Mouse::Right)
-				{
-					game->effects.startFade(4, SineEaseInOut, sf::Color(0, 0, 0), 1);
+					if (!starting && handleLeftClick(event.mouseButton.x, event.mouseButton.y))
+					{
+						starting = true;
+						game->effects.startFade(1.0f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeOut);
+					}
 				}
 				break;
 			case sf::Event::KeyReleased:
@@ -50,12 +51,19 @@ void GameStateMenu::update(const float dt)
 {
 	game->printText(game->effects.getElapsedTime());
 	game->effects.update(dt);
+
+	// Transition to ship placement after fade out animation is complete
+	if (starting && !game->effects.isFading())
+		game->changeState(new GameStatePlacement(game));
 }
 
 void GameStateMenu::render(const float dt)
 {
 	if (!initialized)
 		initialize();
+
+	// Display the background
+	game->window.draw(backgroundSprite);
 
 	// Display the Title
 	game->window.draw(titleText);
@@ -83,7 +91,7 @@ void GameStateMenu::render(const float dt)
 		initialized = true;
 	}
 	
-	game->window.draw(game->coordText);
+	//game->window.draw(game->coordText);
 	game->effects.render(game->window);
 }
 
@@ -93,7 +101,7 @@ void GameStateMenu::initialize()
 	const float centerHeight = Utilities::getCenterOfScreen(game->window).y;
 	const float offsetY = 100.0f;
 
-	Utilities::prepareText(titleText, "Cattle Ship", titleFont, 60, sf::Text::Bold, sf::Color::Green,
+	Utilities::prepareText(titleText, "Cattle Ship", titleFont, 60, sf::Text::Bold, sf::Color::White,
 		Utilities::getCenterXOfText(game->window, titleText), 0);
 
 	Utilities::prepareText(settingsText, "Settings", menuFont, 40, sf::Text::Bold, sf::Color::White,
@@ -121,6 +129,8 @@ void GameStateMenu::initialize()
 		Utilities::getCenterXOfText(game->window, quitText), centerHeight + offsetY);
 
 	Utilities::selectDifficulty(easyText, mediumText, hardText);
+
+	backgroundSprite = game->textureManager.GetSpriteBySpriteType(MenuBackground);
 }
 
 // If it returns true, that means it must return.
@@ -153,8 +163,6 @@ bool GameStateMenu::handleLeftClick(const int x, const int y)
 	{
 		if (playText.getGlobalBounds().contains(x, y))
 		{
-			//game->printText("Clicked Play!");
-			game->changeState(new GameStatePlacement(game));
 			return true;
 		}
 		else if (optionsText.getGlobalBounds().contains(x, y))

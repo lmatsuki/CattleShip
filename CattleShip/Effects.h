@@ -6,6 +6,7 @@
 #include <SFML/Graphics.hpp>
 #include "TweenEnum.h"
 #include "Utilities.h"
+#include "FadeEnum.h"
 
 # define M_PI           3.14159265358979323846  /* pi */
 
@@ -19,17 +20,23 @@ public:
 	void update(const float dt);
 	void render(sf::RenderWindow& window);
 
-	void startFade(const float newDuration, const TweenEnum tweenState, const sf::Color newFadeColor = sf::Color::Transparent, const float newPauseDuration = 0);
+	void startFade(const float newDuration, const TweenEnum tweenState, const sf::Color newFadeColor = sf::Color::Transparent, 
+		const float newPauseDuration = 0, const FadeEnum newFadeDirection = FadeOut);
 	float getTweenValue(const float time, const float begin, const float change, const float duration, const TweenEnum tweenType);
 	std::string getElapsedTime();
 	std::string getCurrentAlpha();
 	float getPauseStartTime();
 	float getPauseEndTime();
+	bool isFading();
+	void setBackgroundColor(const sf::Color color);
+	void setQuadColor();
+	void setQuadPositionFullScreen(const int width, const int height);
 	
 private:
 	sf::VertexArray quadScreen;
 	sf::Color fadeColor;
 	TweenEnum tween;
+	FadeEnum fadeDirection;
 	float duration;
 	float elapsedTime;
 	float pauseDuration;

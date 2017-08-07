@@ -4,14 +4,15 @@
 #include <SFML/Graphics.hpp>
 #include "Game.h"
 #include "GameStateMenu.h"
+#include "GameStateSplash.h"
 #include "Utilities.h"
 
 
 Game::Game() : backGroundColor(sf::Color::Black), playerOne(10, &textureManager),
 	playerTurn(true), playerTwo(10, &textureManager)
 {
-	pushState(new GameStateMenu(this));
-	init();	
+	init();
+	pushState(new GameStateSplash(this));
 }
 
 Game::~Game()
