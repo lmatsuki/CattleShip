@@ -1,6 +1,8 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "TextureManager.h"
+#include "SpriteEnum.h"
 
 namespace Utilities
 {
@@ -9,6 +11,9 @@ namespace Utilities
 
 	// Get the center x value of the text.
 	float getCenterXOfText(const sf::RenderWindow& window, const sf::Text& text);
+
+	// Get the center x value of the sprite.
+	float getCenterXOfSprite(const sf::RenderWindow& window, const sf::Sprite& sprite);
 
 	// Render the text using all the parameters.
 	void renderText(sf::Text& text, sf::RenderWindow& window, const std::string& textString,
@@ -21,7 +26,9 @@ namespace Utilities
 		float xPos, float yPos);
 
 	// Color the first selected text while coloring other texts white.
-	void selectDifficulty(sf::Text& selectedText, sf::Text& secondText, sf::Text& thirdText);
+	void selectDifficulty(sf::Sprite& easySprite, sf::Sprite& mediumSprite, sf::Sprite& hardSprite, 
+		SpriteEnum selected, TextureManager* textureManager, sf::RenderWindow* window);
+	/*void selectDifficulty(sf::Text& selectedText, sf::Text& secondText, sf::Text& thirdText);*/
 
 	// Returns the full font directory path with the font name.
 	std::string getFontPath(const std::string& fontName);

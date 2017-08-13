@@ -33,7 +33,7 @@ void Board::initializeTiles()
 
 	sf::RectangleShape tile(sf::Vector2f(tileWidth, tileHeight));
 	tile.setOutlineThickness(2);
-	tile.setOutlineColor(sf::Color::Black);
+	tile.setOutlineColor(sf::Color(75, 55, 0)); // Dark brown
 	tile.setFillColor(sf::Color::Transparent);
 
 	for (int i = 0; i < dimensions; i++)
@@ -203,7 +203,7 @@ void Board::clearOutlineColors()
 	int tilesSize = dimensions * dimensions;
 	for (int i = 0; i < tilesSize; i++)
 	{
-		tiles[i].setOutlineColor(sf::Color::Black);
+		tiles[i].setOutlineColor(sf::Color(75, 55, 0)); // Dark brown
 	}
 }
 
@@ -336,7 +336,7 @@ void Board::checkMouseOver(const sf::Vector2f position, const int shipType, cons
 		}
 		else
 		{
-			tiles[i].setOutlineColor(sf::Color::Black);
+			tiles[i].setOutlineColor(sf::Color(75, 55, 0)); // Dark Brown
 		}
 	}
 

@@ -20,5 +20,11 @@ public:
 
 	sf::Font labelFont;
 	sf::Text labelText;
+
+	sf::Sprite backgroundSprite;
+	sf::Sprite playerTurnSprite;
+	sf::Sprite enemyTurnSprite;
+	sf::Sprite playerWinSprite;
+	sf::Sprite enemyWinSprite;
 	bool isGameOver;
 };

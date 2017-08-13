@@ -7,6 +7,20 @@ GameStatePlay::GameStatePlay(Game * game) : GameState(game)
 	isGameOver = false;
 	// Prepare label font
 	labelFont.loadFromFile(Utilities::getFontPath("arial.ttf"));
+
+	// Prepare the label sprite and background sprite
+	playerTurnSprite = game->textureManager.GetSpriteBySpriteType(PlayPlayerTurnSprite);
+	playerTurnSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, playerTurnSprite), 0));
+	enemyTurnSprite = game->textureManager.GetSpriteBySpriteType(PlayEnemyTurnSprite);
+	enemyTurnSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, enemyTurnSprite), 0));
+	backgroundSprite = game->textureManager.GetSpriteBySpriteType(BoardBackgroundSprite);
+
+	playerWinSprite = game->textureManager.GetSpriteBySpriteType(PlayPlayerWinSprite);
+	playerWinSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, playerWinSprite), 
+		Utilities::getCenterOfScreen(game->window).y - 50));
+	enemyWinSprite = game->textureManager.GetSpriteBySpriteType(PlayEnemyWinSprite);
+	enemyWinSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, enemyWinSprite),
+		Utilities::getCenterOfScreen(game->window).y - 50));
 }
 
 GameStatePlay::~GameStatePlay()
@@ -34,6 +48,12 @@ void GameStatePlay::handleInput()
 				{
 					game->playerTurn = !game->playerTurn;
 				}
+			}
+			else
+			{
+				// End game if screen is clicked and there is a winner 
+				game->changeState(new GameStateMenu(game));
+				return;
 			}
 			break;
 		case sf::Event::KeyReleased:
@@ -71,26 +91,30 @@ void GameStatePlay::update(const float dt)
 
 void GameStatePlay::render(const float dt)
 {
-	// Show instructions text, current cattle being placed
-	Utilities::renderText(labelText, game->window, "Enemy Board:", labelFont, 40, sf::Text::Bold, sf::Color::White,
-		Utilities::getCenterXOfText(game->window, labelText), 0);
+	// Display the background
+	game->window.draw(backgroundSprite);
 
-	// Display the board
+	// Display the board & label sprite
 	if (game->playerTurn)
 	{
 		game->playerTwo.board.render(game->window, false);
+		game->window.draw(playerTurnSprite);
 		//game->playerOne.board.render(game->window, true);
 	}
 	else
 	{
 		game->playerOne.board.render(game->window, true);
+		game->window.draw(enemyTurnSprite);
 	}
 
 	// Display winner/loser text
 	if (isGameOver)
 		renderWinner(getCurrentPlayer());
 
-	game->window.draw(game->coordText);
+	// Show instructions text, current cattle being placed
+	//Utilities::renderText(labelText, game->window, "Enemy Board:", labelFont, 40, sf::Text::Bold, sf::Color::White,
+	//	Utilities::getCenterXOfText(game->window, labelText), 0);
+	//game->window.draw(game->coordText);
 }
 
 void GameStatePlay::handleCurrentPlayerClick(const sf::Vector2f mousePosition)
@@ -122,11 +146,21 @@ Player * GameStatePlay::getOtherPlayer()
 
 void GameStatePlay::renderWinner(Player* player)
 {
+	// Set background
+	game->window.draw(backgroundSprite);
+
 	// If player 1 didn't win, player 2 must have won
 	if (player == &game->playerOne && player->won)
-		Utilities::renderText(labelText, game->window, "You won!!", labelFont, 80, sf::Text::Bold, sf::Color::White,
-			Utilities::getCenterXOfText(game->window, labelText), Utilities::getCenterOfScreen(game->window).y);
+	{
+		game->window.draw(playerWinSprite);
+		//Utilities::renderText(labelText, game->window, "You won!!", labelFont, 80, sf::Text::Bold, sf::Color::White,
+		//	Utilities::getCenterXOfText(game->window, labelText), Utilities::getCenterOfScreen(game->window).y);
+
+	}
 	else
-		Utilities::renderText(labelText, game->window, "You lost!!", labelFont, 80, sf::Text::Bold, sf::Color::White,
-			Utilities::getCenterXOfText(game->window, labelText), Utilities::getCenterOfScreen(game->window).y);
+	{
+		game->window.draw(enemyWinSprite);
+		//Utilities::renderText(labelText, game->window, "You lost!!", labelFont, 80, sf::Text::Bold, sf::Color::White,
+		//	Utilities::getCenterXOfText(game->window, labelText), Utilities::getCenterOfScreen(game->window).y);
+	}
 }

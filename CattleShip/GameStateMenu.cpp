@@ -6,7 +6,7 @@ GameStateMenu::GameStateMenu(Game* game) : displaySettings(false), initialized(f
 	starting(false)
 {
 	// Prepare title font
-	titleFont.loadFromFile(Utilities::getFontPath("arial.ttf"));
+	//titleFont.loadFromFile(Utilities::getFontPath("arial.ttf"));
 	// Prepare menu font
 	menuFont.loadFromFile(Utilities::getFontPath("arial.ttf"));
 	game->effects.startFade(0.5f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeIn);
@@ -66,22 +66,32 @@ void GameStateMenu::render(const float dt)
 	game->window.draw(backgroundSprite);
 
 	// Display the Title
-	game->window.draw(titleText);
+	game->window.draw(titleSprite);
 
 	if (displaySettings)
 	{
-		game->window.draw(settingsText);
-		game->window.draw(easyText);
-		game->window.draw(mediumText);
-		game->window.draw(hardText);
-		game->window.draw(backText);
+		game->window.draw(easySprite);
+		game->window.draw(mediumSprite);
+		game->window.draw(hardSprite);
+		game->window.draw(backSprite);
+
+		game->window.draw(settingsSprite);
+
+		//game->window.draw(easyText);
+		//game->window.draw(mediumText);
+		//game->window.draw(hardText);
+		//game->window.draw(backText);
+		//game->window.draw(settingsText);
 	}
 	else
 	{
 		// Display other buttons
-		game->window.draw(playText);
-		game->window.draw(optionsText);
-		game->window.draw(quitText);
+		game->window.draw(playSprite);
+		game->window.draw(optionsSprite);
+		game->window.draw(quitSprite);
+		//game->window.draw(playText);
+		//game->window.draw(optionsText);
+		//game->window.draw(quitText);
 	}
 
 	// Need to initialize twice to reposition items correctly
@@ -101,36 +111,60 @@ void GameStateMenu::initialize()
 	const float centerHeight = Utilities::getCenterOfScreen(game->window).y;
 	const float offsetY = 100.0f;
 
-	Utilities::prepareText(titleText, "Cattle Ship", titleFont, 60, sf::Text::Bold, sf::Color::White,
-		Utilities::getCenterXOfText(game->window, titleText), 0);
+	titleSprite = game->textureManager.GetSpriteBySpriteType(MenuTitle);
+	titleSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, titleSprite), 0));
 
-	Utilities::prepareText(settingsText, "Settings", menuFont, 40, sf::Text::Bold, sf::Color::White,
-		Utilities::getCenterXOfText(game->window, settingsText), centerHeight - offsetY);
+	settingsSprite = game->textureManager.GetSpriteBySpriteType(MenuSettings);
+	settingsSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, settingsSprite), centerHeight - offsetY));
 
-	Utilities::prepareText(easyText, "Easy", menuFont, 40, sf::Text::Bold, sf::Color::White,
-		Utilities::getCenterXOfText(game->window, easyText) - 200, centerHeight);
+	//Utilities::prepareText(titleText, "Cattle Ship", titleFont, 60, sf::Text::Bold, sf::Color::White,
+	//	Utilities::getCenterXOfText(game->window, titleText), 0);
+	//Utilities::prepareText(settingsText, "Settings", menuFont, 40, sf::Text::Bold, sf::Color::White,
+	//	Utilities::getCenterXOfText(game->window, settingsText), centerHeight - offsetY);
 
-	Utilities::prepareText(mediumText, "Medium", menuFont, 40, sf::Text::Bold, sf::Color::White,
-		Utilities::getCenterXOfText(game->window, mediumText), centerHeight);
+	// Difficulties
+	backSprite = game->textureManager.GetSpriteBySpriteType(MenuBack);
+	backSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, backSprite), centerHeight + offsetY));
 
-	Utilities::prepareText(hardText, "Hard", menuFont, 40, sf::Text::Bold, sf::Color::White,
-		Utilities::getCenterXOfText(game->window, hardText) + 200, centerHeight);
+	easySprite = game->textureManager.GetSpriteBySpriteType(MenuEasy);
+	easySprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, easySprite) - 200, centerHeight));
 
-	Utilities::prepareText(backText, "Back", menuFont, 40, sf::Text::Bold, sf::Color::White,
-		Utilities::getCenterXOfText(game->window, backText), centerHeight + offsetY);
+	mediumSprite = game->textureManager.GetSpriteBySpriteType(MenuMedium);
+	mediumSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, mediumSprite), centerHeight));
 
-	Utilities::prepareText(playText, "Play", menuFont, 40, sf::Text::Bold, sf::Color::White,
-		Utilities::getCenterXOfText(game->window, playText), centerHeight - offsetY);
+	hardSprite = game->textureManager.GetSpriteBySpriteType(MenuHard);
+	hardSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, hardSprite) + 200, centerHeight));
 
-	Utilities::prepareText(optionsText, "Options", menuFont, 40, sf::Text::Bold, sf::Color::White,
-		Utilities::getCenterXOfText(game->window, optionsText), centerHeight);
+	//Utilities::prepareText(easyText, "Easy", menuFont, 40, sf::Text::Bold, sf::Color::White,
+	//	Utilities::getCenterXOfText(game->window, easyText) - 200, centerHeight);
+	//Utilities::prepareText(mediumText, "Medium", menuFont, 40, sf::Text::Bold, sf::Color::White,
+	//	Utilities::getCenterXOfText(game->window, mediumText), centerHeight);
+	//Utilities::prepareText(hardText, "Hard", menuFont, 40, sf::Text::Bold, sf::Color::White,
+	//	Utilities::getCenterXOfText(game->window, hardText) + 200, centerHeight);
+	//Utilities::prepareText(backText, "Back", menuFont, 40, sf::Text::Bold, sf::Color::White,
+	//	Utilities::getCenterXOfText(game->window, backText), centerHeight + offsetY);
 
-	Utilities::prepareText(quitText, "Quit", menuFont, 40, sf::Text::Bold, sf::Color::White,
-		Utilities::getCenterXOfText(game->window, quitText), centerHeight + offsetY);
+	// Main buttons
+	playSprite = game->textureManager.GetSpriteBySpriteType(MenuPlay);
+	playSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, playSprite), centerHeight - offsetY));
 
-	Utilities::selectDifficulty(easyText, mediumText, hardText);
+	optionsSprite = game->textureManager.GetSpriteBySpriteType(MenuOptions);
+	optionsSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, optionsSprite), centerHeight));
+
+	quitSprite = game->textureManager.GetSpriteBySpriteType(MenuExit);
+	quitSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, quitSprite), centerHeight + offsetY));
+
+	Utilities::selectDifficulty(easySprite, mediumSprite, hardSprite, MenuEasySelected, &game->textureManager, &game->window);
+	//Utilities::selectDifficulty(easyText, mediumText, hardText);
 
 	backgroundSprite = game->textureManager.GetSpriteBySpriteType(MenuBackground);
+
+	//Utilities::prepareText(playText, "Play", menuFont, 40, sf::Text::Bold, sf::Color::White,
+	//	Utilities::getCenterXOfText(game->window, playText), centerHeight - offsetY);
+	//Utilities::prepareText(optionsText, "Options", menuFont, 40, sf::Text::Bold, sf::Color::White,
+	//	Utilities::getCenterXOfText(game->window, optionsText), centerHeight);
+	//Utilities::prepareText(quitText, "Quit", menuFont, 40, sf::Text::Bold, sf::Color::White,
+	//	Utilities::getCenterXOfText(game->window, quitText), centerHeight + offsetY);
 }
 
 // If it returns true, that means it must return.
@@ -139,37 +173,40 @@ bool GameStateMenu::handleLeftClick(const int x, const int y)
 	//game->printCoordinates(x, y);
 	if (displaySettings)
 	{
-		if (easyText.getGlobalBounds().contains(x, y))
+		if (easySprite.getGlobalBounds().contains(x, y))
 		{
 			game->settings.setDifficulty(Easy);
-			Utilities::selectDifficulty(easyText, mediumText, hardText);
+			Utilities::selectDifficulty(easySprite, mediumSprite, hardSprite, MenuEasySelected, &game->textureManager, &game->window);
+			//Utilities::selectDifficulty(easyText, mediumText, hardText);
 		}
-		else if (mediumText.getGlobalBounds().contains(x, y))
+		else if (mediumSprite.getGlobalBounds().contains(x, y))
 		{
 			game->settings.setDifficulty(Medium);
-			Utilities::selectDifficulty(mediumText, easyText, hardText);
+			Utilities::selectDifficulty(easySprite, mediumSprite, hardSprite, MenuMediumSelected, &game->textureManager, &game->window);
+			//Utilities::selectDifficulty(mediumText, easyText, hardText);
 		}
-		else if (hardText.getGlobalBounds().contains(x, y))
+		else if (hardSprite.getGlobalBounds().contains(x, y))
 		{
 			game->settings.setDifficulty(Hard);
-			Utilities::selectDifficulty(hardText, easyText, mediumText);
+			Utilities::selectDifficulty(easySprite, mediumSprite, hardSprite, MenuHardSelected, &game->textureManager, &game->window);
+			//Utilities::selectDifficulty(hardText, easyText, mediumText);
 		}
-		else if (backText.getGlobalBounds().contains(x, y))
+		else if (backSprite.getGlobalBounds().contains(x, y))
 		{
 			displaySettings = false;
 		}
 	}
 	else
 	{
-		if (playText.getGlobalBounds().contains(x, y))
+		if (playSprite.getGlobalBounds().contains(x, y))
 		{
 			return true;
 		}
-		else if (optionsText.getGlobalBounds().contains(x, y))
+		else if (optionsSprite.getGlobalBounds().contains(x, y))
 		{
 			displaySettings = true;
 		}
-		else if (quitText.getGlobalBounds().contains(x, y))
+		else if (quitSprite.getGlobalBounds().contains(x, y))
 			game->window.close();
 	}
 

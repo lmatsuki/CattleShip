@@ -15,6 +15,9 @@ public:
 	int placedShipIndex;
 	bool shipHorizontal;
 	bool finishedPlacement;
-	sf::Font labelFont;
-	sf::Text labelText;
+	//sf::Font labelFont;
+	//sf::Text labelText;
+
+	sf::Sprite backgroundSprite;
+	sf::Sprite labelSprite;
 };

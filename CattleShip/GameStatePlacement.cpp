@@ -11,7 +11,12 @@ GameStatePlacement::GameStatePlacement(Game* game) : GameState(game)
 	finishedPlacement = false;
 
 	// Prepare label font
-	labelFont.loadFromFile(Utilities::getFontPath("arial.ttf"));
+	//labelFont.loadFromFile(Utilities::getFontPath("arial.ttf"));
+
+	// Prepare the label sprite and background sprite
+	labelSprite = game->textureManager.GetSpriteBySpriteType(PlacementLabel);
+	labelSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, labelSprite), 0));
+	backgroundSprite = game->textureManager.GetSpriteBySpriteType(BoardBackgroundSprite);
 
 	// Clear the board in case it's a consecutive game
 	game->playerOne.init(game->window);
@@ -96,9 +101,11 @@ void GameStatePlacement::update(const float dt)
 
 void GameStatePlacement::render(const float dt)
 {
+	// Set background
+	game->window.draw(backgroundSprite);
+
 	// Show instructions text, current cattle being placed
-	Utilities::renderText(labelText, game->window, "Place your cattle!", labelFont, 40, sf::Text::Bold, sf::Color::White,
-		Utilities::getCenterXOfText(game->window, labelText), 0);
+	game->window.draw(labelSprite);
 
 	// Display the ship type
 	game->playerOne.renderCurrentShip(game->window);
@@ -107,4 +114,7 @@ void GameStatePlacement::render(const float dt)
 	game->playerOne.board.render(game->window, true);
 	//game->window.draw(game->coordText);
 	game->effects.render(game->window);
+
+	//Utilities::renderText(labelText, game->window, "Place your cattle!", labelFont, 40, sf::Text::Bold, sf::Color::White,
+	//	Utilities::getCenterXOfText(game->window, labelText), 0);
 }

@@ -16,6 +16,13 @@ namespace Utilities
 		return centerOfText;
 	}
 
+	// Get the center x value of the sprite.
+	float getCenterXOfSprite(const sf::RenderWindow & window, const sf::Sprite & sprite)
+	{
+		const float centerOfText = getCenterOfScreen(window).x - sprite.getLocalBounds().width / 2;
+		return centerOfText;
+	}
+
 	// Render the text using all the parameters.
 	void renderText(sf::Text& text, sf::RenderWindow& window, const std::string& textString,
 		const sf::Font& font, int size, const sf::Uint32& style, const sf::Color& color,
@@ -44,12 +51,32 @@ namespace Utilities
 	}
 
 	// Color the first selected text while coloring other texts white.
-	void selectDifficulty(sf::Text & selectedText, sf::Text & secondText, sf::Text & thirdText)
+	void selectDifficulty(sf::Sprite& easySprite, sf::Sprite& mediumSprite, sf::Sprite& hardSprite, SpriteEnum selected, 
+		TextureManager* textureManager, sf::RenderWindow* window)
 	{
-		selectedText.setFillColor(sf::Color::Green);
-		secondText.setFillColor(sf::Color::White);
-		thirdText.setFillColor(sf::Color::White);
+		const float centerHeight = Utilities::getCenterOfScreen(*window).y;
+		easySprite = textureManager->GetSpriteBySpriteType(MenuEasy);
+		mediumSprite = textureManager->GetSpriteBySpriteType(MenuMedium);
+		hardSprite = textureManager->GetSpriteBySpriteType(MenuHard);
+
+		switch (selected)
+		{
+		case MenuEasySelected:		easySprite = textureManager->GetSpriteBySpriteType(MenuEasySelected); break;
+		case MenuMediumSelected:	mediumSprite = textureManager->GetSpriteBySpriteType(MenuMediumSelected); break;
+		case MenuHardSelected:		hardSprite = textureManager->GetSpriteBySpriteType(MenuHardSelected); break;
+		}
+
+		easySprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(*window, easySprite) - 200, centerHeight));
+		mediumSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(*window, mediumSprite), centerHeight));
+		hardSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(*window, hardSprite) + 200, centerHeight));
 	}
+
+	//void selectDifficulty(sf::Text & selectedText, sf::Text & secondText, sf::Text & thirdText)
+	//{
+	//	selectedText.setFillColor(sf::Color::Green);
+	//	secondText.setFillColor(sf::Color::White);
+	//	thirdText.setFillColor(sf::Color::White);
+	//}
 
 	// Returns the full font directory path with the font name.
 	std::string getFontPath(const std::string& fontName)
