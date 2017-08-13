@@ -136,7 +136,7 @@ Player* GameStatePlay::getCurrentPlayer()
 		return &game->playerTwo;
 }
 
-Player * GameStatePlay::getOtherPlayer()
+Player* GameStatePlay::getOtherPlayer()
 {
 	if (game->playerTurn)
 		return &game->playerTwo;
@@ -155,7 +155,6 @@ void GameStatePlay::renderWinner(Player* player)
 		game->window.draw(playerWinSprite);
 		//Utilities::renderText(labelText, game->window, "You won!!", labelFont, 80, sf::Text::Bold, sf::Color::White,
 		//	Utilities::getCenterXOfText(game->window, labelText), Utilities::getCenterOfScreen(game->window).y);
-
 	}
 	else
 	{

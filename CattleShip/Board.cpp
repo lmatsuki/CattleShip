@@ -64,10 +64,10 @@ void Board::render(sf::RenderWindow& window, const bool renderShips)
 	for (int i = 0; i < tilesSize; i++)
 	{
 		window.draw(tiles[i]);
-
+		bool renderShipsTemp = true; // To debug enemy ship locations
 		// Don't render the enemy ships unless Hit
 		TileStateEnum tileState = ShipUtilities::getTileStateFromBoard(board[i]);
-		if (renderShips || tileState == Hit)
+		if (renderShipsTemp || tileState == Hit)
 			renderShip(ShipUtilities::getShipTypeFromBoard(board[i]), tiles[i].getPosition(), window);
 
 		// Render player/enemy specific ships with hit/miss marks
@@ -261,20 +261,22 @@ bool Board::getIsValidTileByIndex(const int tilePosition, const int shipSize, co
 	int tilePositionRow = tilePosition / 10;
 	for (int i = 0; i < shipSize; i++)
 	{
-		if (i != 0)
+		if (i == 0)
 		{
-			int offSet = (i + 1) / 2;
-			if (i % 2 == 1)
-				offSet *= -1;
-			if (shipHorizontal)
-				offSet = offSet * dimensions;
-			else if (offSet > 2)
-				offSet--;
+			// Check the first position
+			if (board[tilePosition] != 0)
+				return false;
+		}
+		else
+		{
+			// Check the remaining ship positions
+			// Calculate the offset
+			int offSet = calculateOffset(i, shipHorizontal, dimensions);
 
 			// Early exit if invalid index (also checks they are in the same row if vertical)		
 			// Added check for overlapping ships
 			int checkPosition = tilePosition + offSet;
-			if (checkPosition < 0 || checkPosition >= board.size() ||
+			if (!isWithinBoardSize(checkPosition) ||
 				(!shipHorizontal && checkPosition / 10 != tilePositionRow) || board[checkPosition] != 0)
 				return false;
 		}
@@ -416,4 +418,25 @@ TileStateEnum Board::checkFiredTileIndex(const int tileIndex)
 bool Board::clickedInGrid(float xPos, float yPos)
 {
 	return boardRect.getGlobalBounds().contains(xPos, yPos);
+}
+
+// Calculate the offset.
+int Board::calculateOffset(const int index, const bool shipHorizontal, const int dimensions)
+{	
+	int offSet = (index + 1) / 2;
+
+	if (index % 2 == 1)
+		offSet *= -1;
+	if (shipHorizontal)
+		offSet = offSet * dimensions;
+	else if (offSet > 2)
+		offSet--;
+
+	return offSet;
+}
+
+// Whether the index is greater or equal than 0 and less than board size.
+bool Board::isWithinBoardSize(const int index)
+{
+	return index >= 0 && index < board.size();
 }

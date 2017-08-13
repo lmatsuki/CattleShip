@@ -37,6 +37,8 @@ public:
 	TileStateEnum checkFiredPosition(const sf::Vector2f mousePosition);
 	TileStateEnum checkFiredTileIndex(const int tileIndex);
 	bool clickedInGrid(float xPos, float yPos);
+	int calculateOffset(const int index, const bool shipHorizontal, const int dimensions);
+	bool isWithinBoardSize(const int index);
 
 private:
 	const int dimensions;
