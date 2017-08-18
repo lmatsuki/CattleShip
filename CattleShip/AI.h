@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "DifficultyEnum.h"
 #include "DirectionEnum.h"
+#include "Timer.h"
 
 class AI 
 {
@@ -26,6 +27,8 @@ public:
 	// fallbackTileIndex stack
 	int getFallbackTileIndex();
 	void clearFallbackTileIndex();
+
+	Timer timer;
 
 private:
 	ShipTypeEnum lastHitShipType;

@@ -72,9 +72,14 @@ void GameStatePlay::update(const float dt)
 	// If enemy's turn, enemy picks a random tile until it finds an unclicked tile
 	// inside the board based on difficulty setting
 	TileStateEnum tileState = Invalid;
-	if (!game->playerTurn)
+	if (!game->playerTurn && game->effects.timer.isReady())
 	{
-		tileState = game->ai.fireBasedOnDifficulty(&game->playerOne, game->settings.getDifficulty());
+		game->ai.timer.start(3.0f);
+		if (game->ai.timer.hasFinished(dt))
+		{
+			// Will return from function only after a valid tile is selected
+			tileState = game->ai.fireBasedOnDifficulty(&game->playerOne, game->settings.getDifficulty());
+		}
 	}
 
 	// Need to check game end condition AFTER AI movment and BEFORE turn change
@@ -84,9 +89,16 @@ void GameStatePlay::update(const float dt)
 		getOtherPlayer()->won = true;
 	}
 
-	// Only change turns if a valid tile was clicked
-	if (tileState != Invalid)
-		game->playerTurn = !game->playerTurn;
+	// Only change turns if a valid tile was clicked by enemy
+	if (tileState != Invalid || !game->effects.timer.isReady())
+	{
+		// Add a bit of delay after ai fires
+		game->effects.timer.start(2.0f);
+		if (game->effects.timer.hasFinished(dt))
+		{
+			game->playerTurn = !game->playerTurn;
+		}
+	}
 }
 
 void GameStatePlay::render(const float dt)

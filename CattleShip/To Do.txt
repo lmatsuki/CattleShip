@@ -1,6 +1,6 @@
-- Remove build specific VS files from source control
-- Add transition from enemy board to player board
+- Display player board during enemy turn
 - Add delay when enemy is firing at ships (thinking time)
+- Add transition from enemy board to player board
 - Add lasso when mousing over to fire at ship
 - Find matching dirt sprite
 - When fired, replace grass sprite with dirt sprite
@@ -12,3 +12,4 @@
 
 DONE:
 - Fix the automatic CPU positioning bug where ships can overlap
+- Remove build specific VS files from source control
