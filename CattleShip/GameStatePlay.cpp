@@ -5,6 +5,8 @@
 GameStatePlay::GameStatePlay(Game * game) : GameState(game)
 {
 	isGameOver = false;
+	game->playerTurn = true;  // Reset when playing a new game
+
 	// Prepare label font
 	labelFont.loadFromFile(Utilities::getFontPath("arial.ttf"));
 
@@ -40,7 +42,9 @@ void GameStatePlay::handleInput()
 		case sf::Event::MouseButtonReleased:
 			if (!isGameOver)
 			{
-				if (event.mouseButton.button == sf::Mouse::Left)
+				// Prevents player from firing missles during transition
+				if (event.mouseButton.button == sf::Mouse::Left && game->effects.timers.timerIsReady(PlayerOneFiredMissle) &&
+					game->effects.timers.timerIsReady(PlayerOneTurnEnd))
 				{
 					handleCurrentPlayerClick(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
 				}
@@ -69,42 +73,92 @@ void GameStatePlay::handleInput()
 
 void GameStatePlay::update(const float dt)
 {
+	// Skip if game is over
+	if (isGameOver)
+		return;
+	else
+	{
+		// Need to check game end condition AFTER AI movment and BEFORE turn change
+		/*if (getCurrentPlayer()->areAllShipsDead())*/
+		if (getOtherPlayer()->areAllShipsDead())
+		{
+			isGameOver = true;
+			getCurrentPlayer()->won = true;
+			return;
+		}
+	}
+
 	// If enemy's turn, enemy picks a random tile until it finds an unclicked tile
 	// inside the board based on difficulty setting
 	TileStateEnum tileState = Invalid;
-	if (!game->playerTurn && game->effects.timer.isReady())
+
+	if (!game->playerTurn && game->effects.timers.timerIsReady(DelayAfterAIFires) &&
+		game->effects.timers.timerIsReady(DelayAfterAIFadeOut))
 	{
-		game->ai.timer.start(3.0f);
-		if (game->ai.timer.hasFinished(dt))
+		game->playerTwo.timer.start(1.5f);
+		if (game->playerTwo.timer.hasFinished(dt))
 		{
 			// Will return from function only after a valid tile is selected
-			tileState = game->ai.fireBasedOnDifficulty(&game->playerOne, game->settings.getDifficulty());
+			tileState = game->ai.fireBasedOnDifficulty(&game->playerOne, game->settings.getDifficulty());					
 		}
-	}
-
-	// Need to check game end condition AFTER AI movment and BEFORE turn change
-	if (!isGameOver && getCurrentPlayer()->areAllShipsDead())
-	{
-		isGameOver = true;
-		getOtherPlayer()->won = true;
 	}
 
 	// Only change turns if a valid tile was clicked by enemy
-	if (tileState != Invalid || !game->effects.timer.isReady())
+	if (tileState != Invalid || !game->effects.timers.timerIsReady(DelayAfterAIFires))
 	{
 		// Add a bit of delay after ai fires
-		game->effects.timer.start(2.0f);
-		if (game->effects.timer.hasFinished(dt))
+		game->effects.timers.startTimer(DelayAfterAIFires, 1.0f);
+		if (game->effects.timers.timerHasFinished(DelayAfterAIFires, dt))
 		{
+			game->effects.timers.startTimer(DelayAfterAIFadeOut, 0.5f);
+			game->effects.startFade(0.5f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeOut);
+		}
+	}
+
+	// Switch to player turn after DelayAfterAIFadeOut is complete
+	if (!game->effects.timers.timerIsReady(DelayAfterAIFadeOut))
+	{
+		if (game->effects.timers.timerHasFinished(DelayAfterAIFadeOut, dt))
+		{
+			game->playerTurn = !game->playerTurn;
+			game->effects.startFade(0.5f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeIn);
+		}
+	}
+
+	// Update the timer during player's turn
+	if (game->playerTurn)
+	{
+		// After the player fires a missle
+		if (!game->effects.timers.timerIsReady(PlayerOneFiredMissle) &&
+			game->effects.timers.timerHasFinished(PlayerOneFiredMissle, dt))
+		{
+			game->effects.timers.startTimer(PlayerOneTurnEnd, 0.75f);
+			game->effects.startFade(0.5f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeOut);
+		}
+
+		// After the fade out is complete
+		if (!game->effects.timers.timerIsReady(PlayerOneTurnEnd) && 
+			game->effects.timers.timerHasFinished(PlayerOneTurnEnd, dt))
+		{
+			game->effects.startFade(0.5f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeIn);
 			game->playerTurn = !game->playerTurn;
 		}
 	}
+
+	game->effects.update(dt);
 }
 
 void GameStatePlay::render(const float dt)
 {
 	// Display the background
 	game->window.draw(backgroundSprite);
+
+	// Display winner/loser text
+	if (isGameOver)
+	{
+		renderWinner(getCurrentPlayer());
+		return;
+	}
 
 	// Display the board & label sprite
 	if (game->playerTurn)
@@ -119,14 +173,7 @@ void GameStatePlay::render(const float dt)
 		game->window.draw(enemyTurnSprite);
 	}
 
-	// Display winner/loser text
-	if (isGameOver)
-		renderWinner(getCurrentPlayer());
-
-	// Show instructions text, current cattle being placed
-	//Utilities::renderText(labelText, game->window, "Enemy Board:", labelFont, 40, sf::Text::Bold, sf::Color::White,
-	//	Utilities::getCenterXOfText(game->window, labelText), 0);
-	//game->window.draw(game->coordText);
+	game->effects.render(game->window);
 }
 
 void GameStatePlay::handleCurrentPlayerClick(const sf::Vector2f mousePosition)
@@ -137,7 +184,12 @@ void GameStatePlay::handleCurrentPlayerClick(const sf::Vector2f mousePosition)
 		tileState = game->playerTwo.board.checkFiredPosition(mousePosition);
 
 	if (tileState != Invalid)
-		game->playerTurn = !game->playerTurn;
+	{
+		// Switch turns in update after this timer ends
+		game->effects.timers.startTimer(PlayerOneFiredMissle, 0.75f);
+		//game->effects.timers.startTimer(PlayerOneTurnEnd, 0.75f);
+		//game->effects.startFade(0.5f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeOut);
+	}
 }
 
 Player* GameStatePlay::getCurrentPlayer()
@@ -162,16 +214,12 @@ void GameStatePlay::renderWinner(Player* player)
 	game->window.draw(backgroundSprite);
 
 	// If player 1 didn't win, player 2 must have won
-	if (player == &game->playerOne && player->won)
+	if ((player == &game->playerOne && player->won) || !player->won)
 	{
 		game->window.draw(playerWinSprite);
-		//Utilities::renderText(labelText, game->window, "You won!!", labelFont, 80, sf::Text::Bold, sf::Color::White,
-		//	Utilities::getCenterXOfText(game->window, labelText), Utilities::getCenterOfScreen(game->window).y);
 	}
 	else
 	{
 		game->window.draw(enemyWinSprite);
-		//Utilities::renderText(labelText, game->window, "You lost!!", labelFont, 80, sf::Text::Bold, sf::Color::White,
-		//	Utilities::getCenterXOfText(game->window, labelText), Utilities::getCenterOfScreen(game->window).y);
 	}
 }

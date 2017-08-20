@@ -57,6 +57,7 @@ void Board::render(sf::RenderWindow& window, const bool renderShips)
 
 	// Draw the background
 	sf::Sprite sprite = textureManager->GetSpriteBySpriteType(SpriteGrass);
+	sprite.setScale(1.25f, 1.0f);
 	sprite.setPosition(sf::Vector2f(boardLeft, boardTop));
 	window.draw(sprite);
 
@@ -126,14 +127,15 @@ void Board::renderTile(const int tileState, const sf::Vector2f position, sf::Ren
 	{
 	case Hit:
 		sprite = textureManager->GetSpriteBySpriteType(HitShip);
-		sprite.setPosition(sf::Vector2f(position.x + 10, position.y + 0));
+		sprite.setPosition(sf::Vector2f(position.x + 10, position.y + 1));
 		sprite.setScale(0.35f, 0.35f);
 		window.draw(sprite);
 		break;
 	case Missed:
 		sprite = textureManager->GetSpriteBySpriteType(MissedShip);
-		sprite.setPosition(sf::Vector2f(position.x + 13, position.y + 5));
-		sprite.setScale(0.3f, 0.3f);
+		sprite.setPosition(sf::Vector2f(position.x + 0, position.y + 0));
+		//sprite.setPosition(sf::Vector2f(position.x + 13, position.y + 5));
+		//sprite.setScale(0.3f, 0.3f);
 		window.draw(sprite);
 		break;
 	}

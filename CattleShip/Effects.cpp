@@ -19,6 +19,9 @@ void Effects::init(const sf::RenderWindow& window)
 
 	fadeColor = sf::Color::Transparent;
 	setQuadColor();
+
+	// Initialize the timers
+	timers.init();
 }
 
 void Effects::update(const float dt)

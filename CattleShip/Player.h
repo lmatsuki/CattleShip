@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Board.h"
+#include "Timer.h"
 
 class Player
 {
@@ -14,4 +15,5 @@ public:
 	Board board;
 	int currentShipSelection;
 	TextureManager* textureManager;
+	Timer timer;
 };

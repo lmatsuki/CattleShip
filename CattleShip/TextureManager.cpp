@@ -34,6 +34,7 @@ void TextureManager::LoadTextures()
 	textures->at(Destroyer) = texture;
 	texture.loadFromFile(Utilities::getImagesPath("hit.png"), sf::IntRect(0, 0, 128, 128));
 	textures->at(HitShip) = texture;
+	/*texture.loadFromFile(Utilities::getImagesPath("missed.png"), sf::IntRect(0, 0, 128, 128));*/
 	texture.loadFromFile(Utilities::getImagesPath("missed.png"), sf::IntRect(0, 0, 128, 128));
 	textures->at(MissedShip) = texture;
 

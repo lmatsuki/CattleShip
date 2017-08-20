@@ -80,6 +80,8 @@ TileStateEnum AI::smartFire(Player * player, const int smartChance)
 
 	// Should this move be a smart move?
 	bool smartMove = getSmartOrStupid(smartChance);
+	
+	int currentAttempt = 0;
 
 	// A ship was hit previously and is still alive
 	while (tileState == Invalid)
@@ -104,6 +106,10 @@ TileStateEnum AI::smartFire(Player * player, const int smartChance)
 			lastHitTileIndex = getFallbackTileIndex();
 		else if (!smartMove && tileState == Invalid && noEmptySurroundingTiles(player))
 			smartMove = !smartMove;
+
+		// To prevent getting stuck trying to find valid surrounding tiles (max of 10 attempts)
+		if (currentAttempt >= 10)
+			smartMove = false;
 	}
 
 	return tileState;

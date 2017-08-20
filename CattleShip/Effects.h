@@ -7,7 +7,7 @@
 #include "TweenEnum.h"
 #include "Utilities.h"
 #include "FadeEnum.h"
-#include "Timer.h"
+#include "TimerGroup.h"
 
 # define M_PI           3.14159265358979323846  /* pi */
 
@@ -33,7 +33,7 @@ public:
 	void setQuadColor();
 	void setQuadPositionFullScreen(const int width, const int height);
 	
-	Timer timer;
+	TimerGroup timers;
 
 private:
 	sf::VertexArray quadScreen;
