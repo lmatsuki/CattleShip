@@ -39,6 +39,7 @@ public:
 	bool clickedInGrid(float xPos, float yPos);
 	int calculateOffset(const int index, const bool shipHorizontal, const int dimensions);
 	bool isWithinBoardSize(const int index);
+	sf::Vector2f getRectangleShapePosition(const int index);
 
 private:
 	const int dimensions;

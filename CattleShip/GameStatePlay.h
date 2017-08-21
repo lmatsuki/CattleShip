@@ -26,5 +26,7 @@ public:
 	sf::Sprite enemyTurnSprite;
 	sf::Sprite playerWinSprite;
 	sf::Sprite enemyWinSprite;
+	sf::Sprite shipFoundSprite;
+	bool displayFoundShip;
 	bool isGameOver;
 };

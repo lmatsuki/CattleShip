@@ -20,4 +20,5 @@ public:
 
 	sf::Sprite backgroundSprite;
 	sf::Sprite labelSprite;
+	sf::Sprite rotateSprite;
 };

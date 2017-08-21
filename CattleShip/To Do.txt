@@ -1,7 +1,7 @@
-- Display text/icon when ship is successfully hit
 - Add sound effects
 - Add music
 
+- Design new splash logo
 - Add animation when player wins/loses
 
 
@@ -14,3 +14,6 @@ DONE:
 - Add transition from enemy board to player board
 - Find matching grass/dirt sprite
 - When fired, replace grass sprite with dirt sprite
+- Display text/icon when ship is successfully hit
+- Add rotate button when placing ship
+- Add fading & delay after placing ships

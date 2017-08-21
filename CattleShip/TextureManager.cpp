@@ -37,6 +37,8 @@ void TextureManager::LoadTextures()
 	/*texture.loadFromFile(Utilities::getImagesPath("missed.png"), sf::IntRect(0, 0, 128, 128));*/
 	texture.loadFromFile(Utilities::getImagesPath("missed.png"), sf::IntRect(0, 0, 128, 128));
 	textures->at(MissedShip) = texture;
+	texture.loadFromFile(Utilities::getImagesPath("spotted.png"), sf::IntRect(0, 0, 64, 64));
+	textures->at(FoundShip) = texture;
 
 	// Main menu
 	texture.loadFromFile(Utilities::getImagesPath("cattleship-bg.png"), sf::IntRect(0, 0, 800, 600));
@@ -75,6 +77,8 @@ void TextureManager::LoadTextures()
 	// Placement
 	texture.loadFromFile(Utilities::getImagesPath("placement-label.png"), sf::IntRect(0, 0, 500, 100));
 	textures->at(PlacementLabel) = texture;
+	texture.loadFromFile(Utilities::getImagesPath("rotate.png"), sf::IntRect(0, 0, 300, 64));
+	textures->at(RotateSprite) = texture;
 
 	// Play
 	texture.loadFromFile(Utilities::getImagesPath("play-yourturn.png"), sf::IntRect(0, 0, 264, 64));

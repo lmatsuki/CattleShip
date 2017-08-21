@@ -2,7 +2,7 @@
 #include "Utilities.h"
 #include "ShipUtilities.h"
 
-AI::AI() : lastHitShipType(None), sameShipHitCount(0), lastHitTileIndex(0)
+AI::AI() : lastHitShipType(None), sameShipHitCount(0), lastHitTileIndex(0), shipFoundIndex(0)
 {
 	// Randomize the seed (only once per application)
 	srand(time(NULL));
@@ -147,6 +147,7 @@ void AI::updateHitShipInfo(const int tileIndex, Player* player)
 	// trying to destroy previous ship
 	sameShipHitCount++;
 	lastHitShipType = player->board.getShipByTile(tileIndex);
+	shipFoundIndex = tileIndex;
 
 	if (lastHitShipType != None && ShipUtilities::getShipSize(lastHitShipType) <= sameShipHitCount)
 	{
@@ -210,4 +211,9 @@ void AI::clearFallbackTileIndex()
 {
 	while (!fallbackTileIndex.empty())
 		fallbackTileIndex.pop();
+}
+
+int AI::getShipFoundIndex()
+{
+	return shipFoundIndex;
 }

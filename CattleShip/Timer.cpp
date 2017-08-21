@@ -28,8 +28,8 @@ void Timer::start(const float newDuration)
 {
 	if (ready)
 	{
-		/*duration = newDuration;	*/	
-		duration = 0.3f;  // Override for debugging
+		duration = newDuration;		
+//		duration = 0.3f;  // Override for debugging
 		ready = false;
 	}
 }

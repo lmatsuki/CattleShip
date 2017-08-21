@@ -26,10 +26,12 @@ public:
 	// fallbackTileIndex stack
 	int getFallbackTileIndex();
 	void clearFallbackTileIndex();	
-
+	int getShipFoundIndex();
+	
 private:
+	int lastHitTileIndex;
 	ShipTypeEnum lastHitShipType;
 	int sameShipHitCount;
-	int lastHitTileIndex;
 	std::stack<int> fallbackTileIndex;  // If the AI goes towards to wrong direction, it can fallback to these tiles
+	int shipFoundIndex;
 };

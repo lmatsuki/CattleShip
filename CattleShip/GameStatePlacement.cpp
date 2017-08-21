@@ -16,6 +16,8 @@ GameStatePlacement::GameStatePlacement(Game* game) : GameState(game)
 	// Prepare the label sprite and background sprite
 	labelSprite = game->textureManager.GetSpriteBySpriteType(PlacementLabel);
 	labelSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, labelSprite), 0));
+	rotateSprite = game->textureManager.GetSpriteBySpriteType(RotateSprite);
+	rotateSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, rotateSprite) + 120, 65));
 	backgroundSprite = game->textureManager.GetSpriteBySpriteType(BoardBackgroundSprite);
 
 	// Clear the board in case it's a consecutive game
@@ -35,10 +37,15 @@ void GameStatePlacement::handleInput()
 			game->window.close();
 			break;
 		case sf::Event::MouseButtonReleased:
-			if (event.mouseButton.button == sf::Mouse::Left)
+			if (event.mouseButton.button == sf::Mouse::Left && !finishedPlacement)
 			{
-				placedShipIndex = game->playerOne.board.getValidTileByCoords(sf::Vector2f(event.mouseButton.x, event.mouseButton.y),
-					game->playerOne.currentShipSelection, shipHorizontal);
+				if (rotateSprite.getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y)))
+				{
+					shipHorizontal = !shipHorizontal;
+				}
+				else
+					placedShipIndex = game->playerOne.board.getValidTileByCoords(sf::Vector2f(event.mouseButton.x, event.mouseButton.y),
+						game->playerOne.currentShipSelection, shipHorizontal);
 			}
 			else if (event.mouseButton.button == sf::Mouse::Right)
 			{
@@ -69,16 +76,21 @@ void GameStatePlacement::update(const float dt)
 	{
 		// Clear the rectangle highlights
 		game->playerOne.board.clearOutlineColors();
-
-		// Randomly place ships for placeTwo
-		game->ai.randomPlaceShips(&game->playerTwo);
-		game->changeState(new GameStatePlay(game));
-		return;
+		
+		game->effects.timers.startTimer(PlayerFinishedPlacement, 1.0f);
+		if (!game->effects.timers.timerIsReady(PlayerFinishedPlacement) &&
+			game->effects.timers.timerHasFinished(PlayerFinishedPlacement, dt))
+		{
+			// Randomly place ships for playerTwo
+			game->ai.randomPlaceShips(&game->playerTwo);
+			game->changeState(new GameStatePlay(game));
+			return;
+		}
 	}
 
 	// Change to next ship if current ship is placed
 	if (placedShipIndex != -1)
-	{		
+	{			
 		// Place the ship in the board
 		game->playerOne.board.setBoardPiece(placedShipIndex, game->playerOne.currentShipSelection, shipHorizontal);
 		placedShipIndex = -1;
@@ -86,7 +98,10 @@ void GameStatePlacement::update(const float dt)
 		// Flag finishedPlacement if last ship was placed to change state in the next iteration
 		// We do this to show the updated board after the last ship was placed before changing states
 		if (game->playerOne.currentShipSelection == LastShip)
+		{
+			game->effects.startFade(0.5f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeOut);
 			finishedPlacement = true;
+		}
 		else
 			game->playerOne.currentShipSelection++;
 	}
@@ -110,11 +125,12 @@ void GameStatePlacement::render(const float dt)
 	// Display the ship type
 	game->playerOne.renderCurrentShip(game->window);
 
+	// Display the rotate button
+	game->window.draw(rotateSprite);
+
 	// Display the board
 	game->playerOne.board.render(game->window, true);
 	//game->window.draw(game->coordText);
 	game->effects.render(game->window);
 
-	//Utilities::renderText(labelText, game->window, "Place your cattle!", labelFont, 40, sf::Text::Bold, sf::Color::White,
-	//	Utilities::getCenterXOfText(game->window, labelText), 0);
 }

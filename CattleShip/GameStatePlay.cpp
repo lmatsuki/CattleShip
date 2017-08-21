@@ -5,6 +5,7 @@
 GameStatePlay::GameStatePlay(Game * game) : GameState(game)
 {
 	isGameOver = false;
+	displayFoundShip = false;
 	game->playerTurn = true;  // Reset when playing a new game
 
 	// Prepare label font
@@ -23,6 +24,8 @@ GameStatePlay::GameStatePlay(Game * game) : GameState(game)
 	enemyWinSprite = game->textureManager.GetSpriteBySpriteType(PlayEnemyWinSprite);
 	enemyWinSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, enemyWinSprite),
 		Utilities::getCenterOfScreen(game->window).y - 50));
+	shipFoundSprite = game->textureManager.GetSpriteBySpriteType(FoundShip);
+	game->effects.startFade(0.5f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeIn);
 }
 
 GameStatePlay::~GameStatePlay()
@@ -79,7 +82,6 @@ void GameStatePlay::update(const float dt)
 	else
 	{
 		// Need to check game end condition AFTER AI movment and BEFORE turn change
-		/*if (getCurrentPlayer()->areAllShipsDead())*/
 		if (getOtherPlayer()->areAllShipsDead())
 		{
 			isGameOver = true;
@@ -99,7 +101,13 @@ void GameStatePlay::update(const float dt)
 		if (game->playerTwo.timer.hasFinished(dt))
 		{
 			// Will return from function only after a valid tile is selected
-			tileState = game->ai.fireBasedOnDifficulty(&game->playerOne, game->settings.getDifficulty());					
+			tileState = game->ai.fireBasedOnDifficulty(&game->playerOne, game->settings.getDifficulty());	
+			if (tileState == Hit)
+			{
+				displayFoundShip = true;
+				sf::Vector2f foundLocation(game->playerTwo.board.getRectangleShapePosition(game->ai.getShipFoundIndex()));
+				shipFoundSprite.setPosition(foundLocation.x + 50, foundLocation.y - 50);
+			}
 		}
 	}
 
@@ -121,6 +129,7 @@ void GameStatePlay::update(const float dt)
 		if (game->effects.timers.timerHasFinished(DelayAfterAIFadeOut, dt))
 		{
 			game->playerTurn = !game->playerTurn;
+			displayFoundShip = false;
 			game->effects.startFade(0.5f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeIn);
 		}
 	}
@@ -142,6 +151,7 @@ void GameStatePlay::update(const float dt)
 		{
 			game->effects.startFade(0.5f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeIn);
 			game->playerTurn = !game->playerTurn;
+			displayFoundShip = false;
 		}
 	}
 
@@ -173,6 +183,10 @@ void GameStatePlay::render(const float dt)
 		game->window.draw(enemyTurnSprite);
 	}
 
+	// Draw player ship spotted sign 
+	if (displayFoundShip)
+		game->window.draw(shipFoundSprite);
+
 	game->effects.render(game->window);
 }
 
@@ -187,8 +201,13 @@ void GameStatePlay::handleCurrentPlayerClick(const sf::Vector2f mousePosition)
 	{
 		// Switch turns in update after this timer ends
 		game->effects.timers.startTimer(PlayerOneFiredMissle, 0.75f);
-		//game->effects.timers.startTimer(PlayerOneTurnEnd, 0.75f);
-		//game->effects.startFade(0.5f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeOut);
+		if (tileState == Hit)
+		{
+			displayFoundShip = true;
+			sf::Vector2f foundLocation(game->playerOne.board.getRectangleShapePosition(
+				game->playerOne.board.getTileByCoords(mousePosition)));
+			shipFoundSprite.setPosition(foundLocation.x + 50, foundLocation.y - 50);
+		}
 	}
 }
 

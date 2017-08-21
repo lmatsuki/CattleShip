@@ -25,6 +25,10 @@ void Board::init(const sf::RenderWindow& window)
 
 void Board::initializeTiles()
 {
+	// Skip initialization if already done previously
+	if (tiles.size() > 0)
+		return;
+
 	sf::FloatRect globalBounds = boardRect.getGlobalBounds();
 	float boardTop = globalBounds.top;
 	float boardLeft = globalBounds.left;
@@ -441,4 +445,9 @@ int Board::calculateOffset(const int index, const bool shipHorizontal, const int
 bool Board::isWithinBoardSize(const int index)
 {
 	return index >= 0 && index < board.size();
+}
+
+sf::Vector2f Board::getRectangleShapePosition(const int index)
+{
+	return tiles[index].getPosition();
 }
