@@ -2,6 +2,8 @@
 
 namespace Utilities
 {
+	const std::string RESOURCE_PATH = "D:/Documents/Visual Studio 2017/Projects/CattleShip/CattleShip/";
+
 	// Returns a Vector2f of the center point of the screen.
 	sf::Vector2f getCenterOfScreen(const sf::RenderWindow& window)
 	{
@@ -81,13 +83,18 @@ namespace Utilities
 	// Returns the full font directory path with the font name.
 	std::string getFontPath(const std::string& fontName)
 	{
-		return "D:/Documents/Visual Studio 2017/Projects/CattleShip/CattleShip/font/" + fontName;
+		return RESOURCE_PATH + "font/" + fontName;
 	}
 
 	// Returns the full images directory path with the image name.
 	std::string getImagesPath(const std::string& imageName)
 	{
-		return "D:/Documents/Visual Studio 2017/Projects/CattleShip/CattleShip/images/" + imageName;
+		return RESOURCE_PATH + "images/" + imageName;
+	}
+
+	std::string getSoundfilePath(const std::string& soundfileName)
+	{
+		return RESOURCE_PATH + "sounds/" +	soundfileName;
 	}
 
 	int convertIndicesToIndex(const int x, const int y, const int dimension)

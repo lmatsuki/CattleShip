@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML\Audio.hpp>
 #include "Game.h"
 #include "GameState.h"
 
@@ -42,6 +43,9 @@ public:
 
 	sf::Sprite backgroundSprite;
 	sf::Sprite titleSprite;
+
+	// Music
+	sf::Music menuTheme;
 
 private:
 	bool initialized;

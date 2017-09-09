@@ -36,6 +36,9 @@ namespace Utilities
 	// Returns the full images directory path with the image name.
 	std::string getImagesPath(const std::string& imageName);
 
+	// Returns the full sounds directory path with the soundfile name.
+	std::string getSoundfilePath(const std::string& soundfileName);
+
 	// Convert the passed in x,y indices of a board to an index.
 	int convertIndicesToIndex(const int x, const int y, const int dimension);
 

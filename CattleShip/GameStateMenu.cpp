@@ -10,6 +10,14 @@ GameStateMenu::GameStateMenu(Game* game) : displaySettings(false), initialized(f
 	// Prepare menu font
 	menuFont.loadFromFile(Utilities::getFontPath("arial.ttf"));
 	game->effects.startFade(0.5f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeIn);
+
+	// Prepare music
+	if (menuTheme.openFromFile(Utilities::getSoundfilePath("menutheme.ogg")))
+	{
+		menuTheme.setVolume(game->settings.getCurrentVolume());
+		menuTheme.setLoop(true);
+		menuTheme.play();
+	}
 }
 
 GameStateMenu::~GameStateMenu()
@@ -55,6 +63,10 @@ void GameStateMenu::update(const float dt)
 	// Transition to ship placement after fade out animation is complete
 	if (starting && !game->effects.isFading())
 		game->changeState(new GameStatePlacement(game));
+
+	// Fade the music in/out if currentVolume differs from volume
+	if (game->settings.adjustedVolume())
+		menuTheme.setVolume(game->settings.getCurrentVolume());
 }
 
 void GameStateMenu::render(const float dt)
