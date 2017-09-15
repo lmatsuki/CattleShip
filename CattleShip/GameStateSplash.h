@@ -13,6 +13,7 @@ public:
 	virtual void update(const float dt);
 	virtual void render(const float dt);
 
+private:
 	sf::Font splashFont;
 	sf::Text splashText;
 };

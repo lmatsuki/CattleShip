@@ -1,5 +1,4 @@
-- Add sound effects
-- Add music
+- Add animal sounds when placing them on grid
 
 - Design new splash logo
 - Add animation when player wins/loses
@@ -17,3 +16,5 @@ DONE:
 - Display text/icon when ship is successfully hit
 - Add rotate button when placing ship
 - Add fading & delay after placing ships
+- Add sound effects
+- Add music

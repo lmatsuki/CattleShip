@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML\Audio.hpp>
 #include "Game.h"
 #include "GameState.h"
 
@@ -18,6 +19,7 @@ public:
 	Player* getOtherPlayer();
 	void renderWinner(Player* player);
 
+private:
 	sf::Font labelFont;
 	sf::Text labelText;
 
@@ -29,4 +31,14 @@ public:
 	sf::Sprite shipFoundSprite;
 	bool displayFoundShip;
 	bool isGameOver;
+
+	// Music
+	sf::Music playTheme;
+	sf::Music victoryTheme;
+	sf::Music defeatTheme;
+
+	// Sound
+	sf::Sound sound;
+	sf::SoundBuffer foundSoundBuffer;
+	sf::SoundBuffer missedSoundBuffer;
 };

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML\Audio.hpp>
 #include "Game.h"
 #include "GameState.h"
 
@@ -12,6 +13,7 @@ public:
 	virtual void update(const float dt);
 	virtual void render(const float dt);
 
+private:
 	int placedShipIndex;
 	bool shipHorizontal;
 	bool finishedPlacement;
@@ -21,4 +23,7 @@ public:
 	sf::Sprite backgroundSprite;
 	sf::Sprite labelSprite;
 	sf::Sprite rotateSprite;
+
+	// Music
+	sf::Music placementTheme;
 };

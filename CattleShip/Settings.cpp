@@ -25,6 +25,11 @@ void Settings::setVolume(const float volume)
 	this->volume = volume;
 }
 
+void Settings::setCurrentVolume(const float volume)
+{
+	this->currentVolume = volume;
+}
+
 bool Settings::adjustedVolume()
 {
 	const int currentVolumeInt = (int)(currentVolume * 100);

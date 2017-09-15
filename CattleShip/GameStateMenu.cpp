@@ -9,15 +9,24 @@ GameStateMenu::GameStateMenu(Game* game) : displaySettings(false), initialized(f
 	//titleFont.loadFromFile(Utilities::getFontPath("arial.ttf"));
 	// Prepare menu font
 	menuFont.loadFromFile(Utilities::getFontPath("arial.ttf"));
-	game->effects.startFade(0.5f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeIn);
+
+	// Load sounds
+	buttonSound.setVolume(40);
+	startGameSoundBuffer.loadFromFile(Utilities::getSoundfilePath("startgame.wav"));
+	buttonClickSoundBuffer.loadFromFile(Utilities::getSoundfilePath("buttonclick.wav"));
+	setDifficultySoundBuffer.loadFromFile(Utilities::getSoundfilePath("setdifficulty.wav"));
 
 	// Prepare music
 	if (menuTheme.openFromFile(Utilities::getSoundfilePath("menutheme.ogg")))
 	{
+		game->settings.setCurrentVolume(0);
+		game->settings.setVolume(40);
 		menuTheme.setVolume(game->settings.getCurrentVolume());
 		menuTheme.setLoop(true);
 		menuTheme.play();
 	}
+
+	game->effects.startFade(0.5f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeIn);
 }
 
 GameStateMenu::~GameStateMenu()
@@ -42,6 +51,7 @@ void GameStateMenu::handleInput()
 					{
 						starting = true;
 						game->effects.startFade(1.0f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeOut);
+						game->settings.setVolume(0);
 					}
 				}
 				break;
@@ -62,7 +72,11 @@ void GameStateMenu::update(const float dt)
 
 	// Transition to ship placement after fade out animation is complete
 	if (starting && !game->effects.isFading())
+	{
+		menuTheme.stop();
 		game->changeState(new GameStatePlacement(game));
+		return;
+	}
 
 	// Fade the music in/out if currentVolume differs from volume
 	if (game->settings.adjustedVolume())
@@ -190,36 +204,50 @@ bool GameStateMenu::handleLeftClick(const int x, const int y)
 			game->settings.setDifficulty(Easy);
 			Utilities::selectDifficulty(easySprite, mediumSprite, hardSprite, MenuEasySelected, &game->textureManager, &game->window);
 			//Utilities::selectDifficulty(easyText, mediumText, hardText);
+			buttonSound.setBuffer(setDifficultySoundBuffer);
+			buttonSound.play();
 		}
 		else if (mediumSprite.getGlobalBounds().contains(x, y))
 		{
 			game->settings.setDifficulty(Medium);
 			Utilities::selectDifficulty(easySprite, mediumSprite, hardSprite, MenuMediumSelected, &game->textureManager, &game->window);
 			//Utilities::selectDifficulty(mediumText, easyText, hardText);
+			buttonSound.setBuffer(setDifficultySoundBuffer);
+			buttonSound.play();
 		}
 		else if (hardSprite.getGlobalBounds().contains(x, y))
 		{
 			game->settings.setDifficulty(Hard);
 			Utilities::selectDifficulty(easySprite, mediumSprite, hardSprite, MenuHardSelected, &game->textureManager, &game->window);
 			//Utilities::selectDifficulty(hardText, easyText, mediumText);
+			buttonSound.setBuffer(setDifficultySoundBuffer);
+			buttonSound.play();
 		}
 		else if (backSprite.getGlobalBounds().contains(x, y))
 		{
 			displaySettings = false;
+			buttonSound.setBuffer(buttonClickSoundBuffer);
+			buttonSound.play();
 		}
 	}
 	else
 	{
 		if (playSprite.getGlobalBounds().contains(x, y))
 		{
+			buttonSound.setBuffer(startGameSoundBuffer);
+			buttonSound.play();
 			return true;
 		}
 		else if (optionsSprite.getGlobalBounds().contains(x, y))
 		{
 			displaySettings = true;
+			buttonSound.setBuffer(buttonClickSoundBuffer);
+			buttonSound.play();
 		}
 		else if (quitSprite.getGlobalBounds().contains(x, y))
+		{
 			game->window.close();
+		}
 	}
 
 	return false;

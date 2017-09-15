@@ -23,6 +23,17 @@ GameStatePlacement::GameStatePlacement(Game* game) : GameState(game)
 	// Clear the board in case it's a consecutive game
 	game->playerOne.init(game->window);
 	game->playerTwo.init(game->window);
+
+	// Prepare music
+	if (placementTheme.openFromFile(Utilities::getSoundfilePath("placetheme.ogg")))
+	{	
+		game->settings.setCurrentVolume(0);
+		game->settings.setVolume(40);
+		placementTheme.setVolume(game->settings.getCurrentVolume());
+		placementTheme.setLoop(true);
+		placementTheme.play();
+	}
+
 	game->effects.startFade(0.5f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeIn);
 }
 
@@ -100,6 +111,7 @@ void GameStatePlacement::update(const float dt)
 		if (game->playerOne.currentShipSelection == LastShip)
 		{
 			game->effects.startFade(0.5f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeOut);
+			game->settings.setVolume(0);
 			finishedPlacement = true;
 		}
 		else
@@ -110,6 +122,10 @@ void GameStatePlacement::update(const float dt)
 	sf::Vector2f mousePosition = sf::Vector2f(sf::Mouse::getPosition(game->window));
 	game->playerOne.board.checkMouseOver(mousePosition, game->playerOne.currentShipSelection, shipHorizontal);
 	//game->printCoordinates(mousePosition.x, mousePosition.y);
+
+	// Fade the music in/out if currentVolume differs from volume
+	if (game->settings.adjustedVolume())
+		placementTheme.setVolume(game->settings.getCurrentVolume());
 
 	game->effects.update(dt);
 }

@@ -25,6 +25,24 @@ GameStatePlay::GameStatePlay(Game * game) : GameState(game)
 	enemyWinSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, enemyWinSprite),
 		Utilities::getCenterOfScreen(game->window).y - 50));
 	shipFoundSprite = game->textureManager.GetSpriteBySpriteType(FoundShip);
+
+	// Load sounds
+	sound.setVolume(40);
+	foundSoundBuffer.loadFromFile(Utilities::getSoundfilePath("found.wav"));
+	missedSoundBuffer.loadFromFile(Utilities::getSoundfilePath("missed.wav"));
+
+	// Prepare music
+	victoryTheme.openFromFile(Utilities::getSoundfilePath("victory.ogg"));
+	defeatTheme.openFromFile(Utilities::getSoundfilePath("defeat.ogg"));
+	if (playTheme.openFromFile(Utilities::getSoundfilePath("playtheme.ogg")))
+	{
+		game->settings.setCurrentVolume(0);
+		game->settings.setVolume(40);
+		playTheme.setVolume(game->settings.getCurrentVolume());
+		playTheme.setLoop(true);
+		playTheme.play();
+	}
+
 	game->effects.startFade(0.5f, SineEaseIn, sf::Color(0, 0, 0), 0, FadeIn);
 }
 
@@ -81,11 +99,16 @@ void GameStatePlay::update(const float dt)
 		return;
 	else
 	{
-		// Need to check game end condition AFTER AI movment and BEFORE turn change
+		// Need to check game end condition AFTER AI movement and BEFORE turn change
 		if (getOtherPlayer()->areAllShipsDead())
 		{
+			playTheme.stop();
 			isGameOver = true;
 			getCurrentPlayer()->won = true;
+			if (getCurrentPlayer() == &game->playerOne)
+				victoryTheme.play();
+			else
+				defeatTheme.play();
 			return;
 		}
 	}
@@ -105,8 +128,16 @@ void GameStatePlay::update(const float dt)
 			if (tileState == Hit)
 			{
 				displayFoundShip = true;
+				sound.setBuffer(foundSoundBuffer);
+				sound.play();
 				sf::Vector2f foundLocation(game->playerTwo.board.getRectangleShapePosition(game->ai.getShipFoundIndex()));
 				shipFoundSprite.setPosition(foundLocation.x + 50, foundLocation.y - 50);
+			}
+			else
+			{
+				// Missed
+				sound.setBuffer(missedSoundBuffer);
+				sound.play();
 			}
 		}
 	}
@@ -154,6 +185,10 @@ void GameStatePlay::update(const float dt)
 			displayFoundShip = false;
 		}
 	}
+
+	// Fade the music in/out if currentVolume differs from volume
+	if (game->settings.adjustedVolume())
+		playTheme.setVolume(game->settings.getCurrentVolume());
 
 	game->effects.update(dt);
 }
@@ -204,9 +239,17 @@ void GameStatePlay::handleCurrentPlayerClick(const sf::Vector2f mousePosition)
 		if (tileState == Hit)
 		{
 			displayFoundShip = true;
+			sound.setBuffer(foundSoundBuffer);
+			sound.play();
 			sf::Vector2f foundLocation(game->playerOne.board.getRectangleShapePosition(
 				game->playerOne.board.getTileByCoords(mousePosition)));
 			shipFoundSprite.setPosition(foundLocation.x + 50, foundLocation.y - 50);
+		}
+		else
+		{
+			// Missed
+			sound.setBuffer(missedSoundBuffer);
+			sound.play();
 		}
 	}
 }
@@ -234,7 +277,7 @@ void GameStatePlay::renderWinner(Player* player)
 
 	// If player 1 didn't win, player 2 must have won
 	if ((player == &game->playerOne && player->won) || !player->won)
-	{
+	{		
 		game->window.draw(playerWinSprite);
 	}
 	else

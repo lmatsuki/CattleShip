@@ -18,6 +18,7 @@ public:
 	// If it returns true, that means it must return (play was selected).
 	virtual bool handleLeftClick(const int x, const int y);
 
+private:
 	//sf::Font titleFont;
 	sf::Font menuFont;
 
@@ -44,11 +45,16 @@ public:
 	sf::Sprite backgroundSprite;
 	sf::Sprite titleSprite;
 
-	// Music
-	sf::Music menuTheme;
-
-private:
 	bool initialized;
 	bool displaySettings;
 	bool starting;
+
+	// Music
+	sf::Music menuTheme;
+
+	// Sounds
+	sf::Sound buttonSound;
+	sf::SoundBuffer startGameSoundBuffer;
+	sf::SoundBuffer buttonClickSoundBuffer;
+	sf::SoundBuffer setDifficultySoundBuffer;
 };
