@@ -1,5 +1,10 @@
 #pragma once
 
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <direct.h>
+
 #include <SFML/Graphics.hpp>
 #include "TextureManager.h"
 #include "SpriteEnum.h"
