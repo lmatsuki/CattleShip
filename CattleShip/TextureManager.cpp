@@ -40,6 +40,10 @@ void TextureManager::LoadTextures()
 	texture.loadFromFile(Utilities::getImagesPath("spotted.png"), sf::IntRect(0, 0, 64, 64));
 	textures->at(FoundShip) = texture;
 
+	// Splash screen
+	texture.loadFromFile(Utilities::getImagesPath("splashlogo.png"), sf::IntRect(0, 0, 360, 80));
+	textures->at(SplashLogo) = texture;
+
 	// Main menu
 	texture.loadFromFile(Utilities::getImagesPath("cattleship-bg.png"), sf::IntRect(0, 0, 800, 600));
 	textures->at(MenuBackground) = texture;
@@ -49,8 +53,14 @@ void TextureManager::LoadTextures()
 	textures->at(MenuPlay) = texture;
 	texture.loadFromFile(Utilities::getImagesPath("menu-options.png"), sf::IntRect(0, 0, 200, 48));
 	textures->at(MenuOptions) = texture;
+	texture.loadFromFile(Utilities::getImagesPath("menu-credits.png"), sf::IntRect(0, 0, 200, 48));
+	textures->at(MenuCredits) = texture;
 	texture.loadFromFile(Utilities::getImagesPath("menu-quit.png"), sf::IntRect(0, 0, 128, 48));
 	textures->at(MenuExit) = texture;
+
+	// Credits
+	texture.loadFromFile(Utilities::getImagesPath("menu-creditnames.png"), sf::IntRect(0, 0, 520, 250));
+	textures->at(MenuCreditNames) = texture;
 
 	// Settings
 	texture.loadFromFile(Utilities::getImagesPath("menu-settings.png"), sf::IntRect(0, 0, 224, 48));

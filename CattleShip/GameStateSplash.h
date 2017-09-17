@@ -16,4 +16,5 @@ public:
 private:
 	sf::Font splashFont;
 	sf::Text splashText;
+	sf::Sprite splashSprite;
 };

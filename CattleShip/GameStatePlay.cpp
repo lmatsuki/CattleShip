@@ -26,10 +26,8 @@ GameStatePlay::GameStatePlay(Game * game) : GameState(game)
 		Utilities::getCenterOfScreen(game->window).y - 50));
 	shipFoundSprite = game->textureManager.GetSpriteBySpriteType(FoundShip);
 
-	// Load sounds
-	sound.setVolume(40);
-	foundSoundBuffer.loadFromFile(Utilities::getSoundfilePath("found.wav"));
-	missedSoundBuffer.loadFromFile(Utilities::getSoundfilePath("missed.wav"));
+	// Set the default volume
+	game->settings.setVolume(40);
 
 	// Prepare music
 	victoryTheme.openFromFile(Utilities::getSoundfilePath("victory.ogg"));
@@ -37,7 +35,6 @@ GameStatePlay::GameStatePlay(Game * game) : GameState(game)
 	if (playTheme.openFromFile(Utilities::getSoundfilePath("playtheme.ogg")))
 	{
 		game->settings.setCurrentVolume(0);
-		game->settings.setVolume(40);
 		playTheme.setVolume(game->settings.getCurrentVolume());
 		playTheme.setLoop(true);
 		playTheme.play();
@@ -128,16 +125,14 @@ void GameStatePlay::update(const float dt)
 			if (tileState == Hit)
 			{
 				displayFoundShip = true;
-				sound.setBuffer(foundSoundBuffer);
-				sound.play();
+				game->soundManager.playSound(FoundSoundBuffer);
 				sf::Vector2f foundLocation(game->playerTwo.board.getRectangleShapePosition(game->ai.getShipFoundIndex()));
 				shipFoundSprite.setPosition(foundLocation.x + 50, foundLocation.y - 50);
 			}
 			else
 			{
 				// Missed
-				sound.setBuffer(missedSoundBuffer);
-				sound.play();
+				game->soundManager.playSound(MissedSoundBuffer);
 			}
 		}
 	}
@@ -239,8 +234,7 @@ void GameStatePlay::handleCurrentPlayerClick(const sf::Vector2f mousePosition)
 		if (tileState == Hit)
 		{
 			displayFoundShip = true;
-			sound.setBuffer(foundSoundBuffer);
-			sound.play();
+			game->soundManager.playSound(FoundSoundBuffer);
 			sf::Vector2f foundLocation(game->playerOne.board.getRectangleShapePosition(
 				game->playerOne.board.getTileByCoords(mousePosition)));
 			shipFoundSprite.setPosition(foundLocation.x + 50, foundLocation.y - 50);
@@ -248,8 +242,7 @@ void GameStatePlay::handleCurrentPlayerClick(const sf::Vector2f mousePosition)
 		else
 		{
 			// Missed
-			sound.setBuffer(missedSoundBuffer);
-			sound.play();
+			game->soundManager.playSound(MissedSoundBuffer);
 		}
 	}
 }

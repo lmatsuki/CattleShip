@@ -36,9 +36,4 @@ private:
 	sf::Music playTheme;
 	sf::Music victoryTheme;
 	sf::Music defeatTheme;
-
-	// Sound
-	sf::Sound sound;
-	sf::SoundBuffer foundSoundBuffer;
-	sf::SoundBuffer missedSoundBuffer;
 };

@@ -2,19 +2,13 @@
 #include "GameStatePlacement.h"
 #include "Utilities.h"
 
-GameStateMenu::GameStateMenu(Game* game) : displaySettings(false), initialized(false), GameState(game),
-	starting(false)
+GameStateMenu::GameStateMenu(Game* game) : displaySettings(false), displayCredits(false), 
+	initialized(false), GameState(game), starting(false)
 {
 	// Prepare title font
 	//titleFont.loadFromFile(Utilities::getFontPath("arial.ttf"));
 	// Prepare menu font
 	menuFont.loadFromFile(Utilities::getFontPath("arial.ttf"));
-
-	// Load sounds
-	buttonSound.setVolume(40);
-	startGameSoundBuffer.loadFromFile(Utilities::getSoundfilePath("startgame.wav"));
-	buttonClickSoundBuffer.loadFromFile(Utilities::getSoundfilePath("buttonclick.wav"));
-	setDifficultySoundBuffer.loadFromFile(Utilities::getSoundfilePath("setdifficulty.wav"));
 
 	// Prepare music
 	if (menuTheme.openFromFile(Utilities::getSoundfilePath("menutheme.ogg")))
@@ -109,11 +103,17 @@ void GameStateMenu::render(const float dt)
 		//game->window.draw(backText);
 		//game->window.draw(settingsText);
 	}
+	else if (displayCredits)
+	{
+		game->window.draw(creditNamesSprite);
+		game->window.draw(backSprite);
+	}
 	else
 	{
 		// Display other buttons
 		game->window.draw(playSprite);
 		game->window.draw(optionsSprite);
+		game->window.draw(creditsSprite);
 		game->window.draw(quitSprite);
 		//game->window.draw(playText);
 		//game->window.draw(optionsText);
@@ -134,14 +134,14 @@ void GameStateMenu::render(const float dt)
 void GameStateMenu::initialize()
 {
 	// Prepare the text objects
-	const float centerHeight = Utilities::getCenterOfScreen(game->window).y;
+	const float centerHeight = Utilities::getCenterOfScreen(game->window).y - 50;
 	const float offsetY = 100.0f;
 
 	titleSprite = game->textureManager.GetSpriteBySpriteType(MenuTitle);
 	titleSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, titleSprite), 0));
 
 	settingsSprite = game->textureManager.GetSpriteBySpriteType(MenuSettings);
-	settingsSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, settingsSprite), centerHeight - offsetY));
+	settingsSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, settingsSprite), centerHeight - offsetY + 50));
 
 	//Utilities::prepareText(titleText, "Cattle Ship", titleFont, 60, sf::Text::Bold, sf::Color::White,
 	//	Utilities::getCenterXOfText(game->window, titleText), 0);
@@ -150,7 +150,7 @@ void GameStateMenu::initialize()
 
 	// Difficulties
 	backSprite = game->textureManager.GetSpriteBySpriteType(MenuBack);
-	backSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, backSprite), centerHeight + offsetY));
+	backSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, backSprite), centerHeight + offsetY + 50));
 
 	easySprite = game->textureManager.GetSpriteBySpriteType(MenuEasy);
 	easySprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, easySprite) - 200, centerHeight));
@@ -177,10 +177,25 @@ void GameStateMenu::initialize()
 	optionsSprite = game->textureManager.GetSpriteBySpriteType(MenuOptions);
 	optionsSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, optionsSprite), centerHeight));
 
-	quitSprite = game->textureManager.GetSpriteBySpriteType(MenuExit);
-	quitSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, quitSprite), centerHeight + offsetY));
+	creditsSprite = game->textureManager.GetSpriteBySpriteType(MenuCredits);
+	creditsSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, creditsSprite), centerHeight + offsetY));
 
-	Utilities::selectDifficulty(easySprite, mediumSprite, hardSprite, MenuEasySelected, &game->textureManager, &game->window);
+	quitSprite = game->textureManager.GetSpriteBySpriteType(MenuExit);
+	quitSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, quitSprite), centerHeight + (2 * offsetY)));
+
+	// Credit names
+	creditNamesSprite = game->textureManager.GetSpriteBySpriteType(MenuCreditNames);
+	creditNamesSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, creditNamesSprite), centerHeight - 125));
+
+	// Set selected difficulty based on setting
+	DifficultyEnum currentDifficulty = game->settings.getDifficulty();
+	if (currentDifficulty == Easy)
+		Utilities::selectDifficulty(easySprite, mediumSprite, hardSprite, MenuEasySelected, &game->textureManager, &game->window);
+	else if (currentDifficulty == Medium)
+		Utilities::selectDifficulty(easySprite, mediumSprite, hardSprite, MenuMediumSelected, &game->textureManager, &game->window);
+	else if (currentDifficulty == Hard)
+		Utilities::selectDifficulty(easySprite, mediumSprite, hardSprite, MenuHardSelected, &game->textureManager, &game->window);
+
 	//Utilities::selectDifficulty(easyText, mediumText, hardText);
 
 	backgroundSprite = game->textureManager.GetSpriteBySpriteType(MenuBackground);
@@ -204,45 +219,52 @@ bool GameStateMenu::handleLeftClick(const int x, const int y)
 			game->settings.setDifficulty(Easy);
 			Utilities::selectDifficulty(easySprite, mediumSprite, hardSprite, MenuEasySelected, &game->textureManager, &game->window);
 			//Utilities::selectDifficulty(easyText, mediumText, hardText);
-			buttonSound.setBuffer(setDifficultySoundBuffer);
-			buttonSound.play();
+			game->soundManager.playSound(SetDifficultySoundBuffer);
 		}
 		else if (mediumSprite.getGlobalBounds().contains(x, y))
 		{
 			game->settings.setDifficulty(Medium);
 			Utilities::selectDifficulty(easySprite, mediumSprite, hardSprite, MenuMediumSelected, &game->textureManager, &game->window);
 			//Utilities::selectDifficulty(mediumText, easyText, hardText);
-			buttonSound.setBuffer(setDifficultySoundBuffer);
-			buttonSound.play();
+			game->soundManager.playSound(SetDifficultySoundBuffer);
 		}
 		else if (hardSprite.getGlobalBounds().contains(x, y))
 		{
 			game->settings.setDifficulty(Hard);
 			Utilities::selectDifficulty(easySprite, mediumSprite, hardSprite, MenuHardSelected, &game->textureManager, &game->window);
 			//Utilities::selectDifficulty(hardText, easyText, mediumText);
-			buttonSound.setBuffer(setDifficultySoundBuffer);
-			buttonSound.play();
+			game->soundManager.playSound(SetDifficultySoundBuffer);
 		}
 		else if (backSprite.getGlobalBounds().contains(x, y))
 		{
 			displaySettings = false;
-			buttonSound.setBuffer(buttonClickSoundBuffer);
-			buttonSound.play();
+			game->soundManager.playSound(ButtonClickSoundBuffer);
+		}
+	}
+	else if (displayCredits)
+	{
+		if (backSprite.getGlobalBounds().contains(x, y))
+		{
+			displayCredits = false;
+			game->soundManager.playSound(ButtonClickSoundBuffer);
 		}
 	}
 	else
 	{
 		if (playSprite.getGlobalBounds().contains(x, y))
 		{
-			buttonSound.setBuffer(startGameSoundBuffer);
-			buttonSound.play();
+			game->soundManager.playSound(StartGameSoundBuffer);
 			return true;
+		}
+		else if (creditsSprite.getGlobalBounds().contains(x, y))
+		{
+			displayCredits = true;
+			game->soundManager.playSound(ButtonClickSoundBuffer);
 		}
 		else if (optionsSprite.getGlobalBounds().contains(x, y))
 		{
 			displaySettings = true;
-			buttonSound.setBuffer(buttonClickSoundBuffer);
-			buttonSound.play();
+			game->soundManager.playSound(ButtonClickSoundBuffer);
 		}
 		else if (quitSprite.getGlobalBounds().contains(x, y))
 		{

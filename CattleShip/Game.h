@@ -7,6 +7,7 @@
 #include "AI.h"
 #include "Settings.h"
 #include "Effects.h"
+#include "SoundManager.h"
 
 class GameState;
 
@@ -36,7 +37,9 @@ public:
 	void printCoordinates(int x, int y);
 	void printText(const std::string& text);
 	sf::Text coordText;
+
 	Effects effects;
+	SoundManager soundManager;
 private:	
 	sf::Color backGroundColor;
 	sf::Font font;

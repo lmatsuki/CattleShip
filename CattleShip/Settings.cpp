@@ -1,6 +1,6 @@
 #include "Settings.h"
 
-Settings::Settings() : difficulty(Easy), volume(40), currentVolume(0), volumeIncrement(0.4)
+Settings::Settings() : difficulty(Medium), volume(40), currentVolume(0), volumeIncrement(0.4)
 {
 
 }
@@ -13,6 +13,11 @@ DifficultyEnum Settings::getDifficulty()
 float Settings::getCurrentVolume()
 {
 	return currentVolume;
+}
+
+float Settings::getVolume()
+{
+	return volume;
 }
 
 void Settings::setDifficulty(const DifficultyEnum newDifficulty)

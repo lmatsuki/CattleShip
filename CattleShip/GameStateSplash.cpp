@@ -50,17 +50,16 @@ void GameStateSplash::update(const float dt)
 		return;
 	}
 
-	// Prepare the text object
+	// Prepare the splash logo
 	const float centerHeight = Utilities::getCenterOfScreen(game->window).y;
-
-	Utilities::prepareText(splashText, "ELEM SOFTWARE", splashFont, 50, sf::Text::Bold, sf::Color(70, 207, 255, 255),
-		Utilities::getCenterXOfText(game->window, splashText), centerHeight - 50);
+	splashSprite = game->textureManager.GetSpriteBySpriteType(SplashLogo);
+	splashSprite.setPosition(sf::Vector2f(Utilities::getCenterXOfSprite(game->window, splashSprite), centerHeight - 50));
 
 	game->effects.update(dt);
 }
 
 void GameStateSplash::render(const float dt)
 {
-	game->window.draw(splashText);
+	game->window.draw(splashSprite);
 	game->effects.render(game->window);
 }

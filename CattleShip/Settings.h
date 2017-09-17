@@ -9,6 +9,7 @@ public:
 	
 	DifficultyEnum getDifficulty();
 	float getCurrentVolume();
+	float getVolume();
 
 	virtual void setDifficulty(const DifficultyEnum newDifficulty);
 	virtual void setVolume(const float volume);

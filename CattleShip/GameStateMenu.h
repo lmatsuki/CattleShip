@@ -28,7 +28,10 @@ private:
 	//sf::Text quitText;
 	sf::Sprite playSprite;
 	sf::Sprite optionsSprite;
+	sf::Sprite creditsSprite;
 	sf::Sprite quitSprite;
+
+	sf::Sprite creditNamesSprite;
 
 	//sf::Text settingsText;
 	//sf::Text easyText;
@@ -47,14 +50,9 @@ private:
 
 	bool initialized;
 	bool displaySettings;
+	bool displayCredits;
 	bool starting;
 
 	// Music
 	sf::Music menuTheme;
-
-	// Sounds
-	sf::Sound buttonSound;
-	sf::SoundBuffer startGameSoundBuffer;
-	sf::SoundBuffer buttonClickSoundBuffer;
-	sf::SoundBuffer setDifficultySoundBuffer;
 };

@@ -24,11 +24,13 @@ GameStatePlacement::GameStatePlacement(Game* game) : GameState(game)
 	game->playerOne.init(game->window);
 	game->playerTwo.init(game->window);
 
+	// Set the default volume
+	game->settings.setVolume(40);
+
 	// Prepare music
 	if (placementTheme.openFromFile(Utilities::getSoundfilePath("placetheme.ogg")))
 	{	
 		game->settings.setCurrentVolume(0);
-		game->settings.setVolume(40);
 		placementTheme.setVolume(game->settings.getCurrentVolume());
 		placementTheme.setLoop(true);
 		placementTheme.play();
@@ -52,6 +54,7 @@ void GameStatePlacement::handleInput()
 			{
 				if (rotateSprite.getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y)))
 				{
+					game->soundManager.playSound(ToggleSoundBuffer);
 					shipHorizontal = !shipHorizontal;
 				}
 				else
@@ -73,6 +76,7 @@ void GameStatePlacement::handleInput()
 			}
 			else if (event.key.code == sf::Keyboard::R)
 			{
+				game->soundManager.playSound(ToggleSoundBuffer);
 				shipHorizontal = !shipHorizontal;
 			}
 			break;
@@ -105,6 +109,7 @@ void GameStatePlacement::update(const float dt)
 		// Place the ship in the board
 		game->playerOne.board.setBoardPiece(placedShipIndex, game->playerOne.currentShipSelection, shipHorizontal);
 		placedShipIndex = -1;
+		game->soundManager.playSound(PlacedSoundBuffer);
 
 		// Flag finishedPlacement if last ship was placed to change state in the next iteration
 		// We do this to show the updated board after the last ship was placed before changing states
@@ -148,5 +153,4 @@ void GameStatePlacement::render(const float dt)
 	game->playerOne.board.render(game->window, true);
 	//game->window.draw(game->coordText);
 	game->effects.render(game->window);
-
 }

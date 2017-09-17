@@ -69,10 +69,10 @@ void Board::render(sf::RenderWindow& window, const bool renderShips)
 	for (int i = 0; i < tilesSize; i++)
 	{
 		window.draw(tiles[i]);
-		bool renderShipsTemp = true; // To debug enemy ship locations
+		bool renderShipsTemp = false; // Set to true to debug enemy ship locations
 		// Don't render the enemy ships unless Hit
 		TileStateEnum tileState = ShipUtilities::getTileStateFromBoard(board[i]);
-		if (renderShipsTemp || tileState == Hit)
+		if (renderShips || tileState == Hit || renderShipsTemp)
 			renderShip(ShipUtilities::getShipTypeFromBoard(board[i]), tiles[i].getPosition(), window);
 
 		// Render player/enemy specific ships with hit/miss marks

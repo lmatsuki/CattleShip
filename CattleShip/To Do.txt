@@ -1,9 +1,3 @@
-- Add animal sounds when placing them on grid
-
-- Design new splash logo
-- Add animation when player wins/loses
-
-
 DONE:
 - Fix the automatic CPU positioning bug where ships can overlap
 - Remove build specific VS files from source control
@@ -18,3 +12,10 @@ DONE:
 - Add fading & delay after placing ships
 - Add sound effects
 - Add music
+- Add placement sound effect
+- Load the last checked difficulty setting
+- Set default difficulty to Medium
+- Move all sounds to SoundManager to eliminate input lag
+- Design new splash logo
+- Hide enemy ships from player
+- Add credits
